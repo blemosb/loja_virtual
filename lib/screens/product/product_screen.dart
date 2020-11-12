@@ -23,15 +23,17 @@ class ProductScreen extends StatelessWidget { //tela de detalhamento do produto
         appBar: AppBar(
           title: Text(product.name),
           centerTitle: true,
-          actions: <Widget>[
-            Consumer<UserManager>(
+          actions: <Widget>[ //as actions são os botoes que aparecem na appbar
+            Consumer<UserManager>( //monitora userManager. so vai aparecer opcao se for admin
               builder: (_, userManager, __){
                 if(userManager.adminEnabled){
                   return IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: (){
-                      Navigator.of(context)
-                          .pushReplacementNamed('/edit_product');
+                      Navigator.of(context).pushReplacementNamed(
+                          '/edit_product',
+                          arguments: product
+                      );
                     },
                   );
                 } else {
