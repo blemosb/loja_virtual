@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "390373865593",
+    "firebase_url": "https://loja-brunobarroso.firebaseio.com",
+    "project_id": "loja-brunobarroso",
+    "storage_bucket": "loja-brunobarroso.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390373865593:android:9e6dad79508250594afca8",
+        "android_client_info": {
+          "package_name": "br.com.brunobarroso.loja_virtual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390373865593-75qo82064tn2ibo7v7ka99ng8sqbttj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR37_MEJ3WZeule4PC5wYSEjG8bIZYO9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390373865593-75qo82064tn2ibo7v7ka99ng8sqbttj1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
