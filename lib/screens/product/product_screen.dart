@@ -9,7 +9,7 @@ import 'components/size_widget.dart';
 
 class ProductScreen extends StatelessWidget { //tela de detalhamento do produto
 
-  const ProductScreen(this.product);
+  const ProductScreen(this.product); //argumento passado no flutter é declarado no construtor
 
   final Product product;
 
