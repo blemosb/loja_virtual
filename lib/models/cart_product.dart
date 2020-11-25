@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import "package:loja_virtual/models/product.dart";
-import 'package:loja_virtual/models/items_size.dart';
+import 'package:loja_virtual/models/item_size.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CartProduct extends ChangeNotifier { //model do item do carrinho

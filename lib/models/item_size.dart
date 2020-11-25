@@ -1,5 +1,7 @@
 class ItemSize { //preço e estoque por tamanho do produto
 
+  ItemSize({this.name, this.price, this.stock});
+
   String name;
   num price;
   int stock;
@@ -11,6 +13,14 @@ class ItemSize { //preço e estoque por tamanho do produto
   }
 
   bool get hasStock => stock > 0;
+
+  ItemSize clone(){
+    return ItemSize(
+      name: name,
+      price: price,
+      stock: stock,
+    );
+  }
 
   @override
   String toString() {

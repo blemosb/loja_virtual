@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:loja_virtual/models/items_size.dart';
+import 'package:loja_virtual/models/item_size.dart';
 import 'package:flutter/cupertino.dart';
 
 class Product extends ChangeNotifier { //model do produto
@@ -10,6 +10,21 @@ class Product extends ChangeNotifier { //model do produto
   String description;
   List<String> images;
   List<ItemSize> sizes;
+
+  Product({this.id, this.name, this.description, this.images, this.sizes}){
+    images = images ?? []; //se n receber um valor de imagens no parametro cria uma lista vazia
+    sizes = sizes ?? [];
+  }
+
+  Product clone(){
+    return Product(
+      id: id,
+      name: name,
+      description: description,
+      images: List.from(images),
+      sizes: sizes.map((size) => size.clone()).toList(), //pega cada item da lista de sizes, clonando e transformando em uma nova lista
+    );
+  }
 
   Product.fromDocument(DocumentSnapshot document){  //le um produto do firebase
     id = document.id;
@@ -48,6 +63,15 @@ class Product extends ChangeNotifier { //model do produto
     } catch (e){
       return null;
     }
+  }
+
+  num get basePrice { //pega o menor preço dentre todos os tamnahos q tem no estoque
+    num lowest = double.infinity;
+    for(final size in sizes){
+      if(size.price < lowest && size.hasStock)
+        lowest = size.price;
+    }
+    return lowest;
   }
 
 }

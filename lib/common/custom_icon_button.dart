@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomIconButton extends StatelessWidget {
+class CustomIconButton extends StatelessWidget { //customização de botões para ficar menor q o tamanho original do flutter
 
   const CustomIconButton({this.iconData, this.color, this.onTap});
 
@@ -20,7 +20,7 @@ class CustomIconButton extends StatelessWidget {
             padding: const EdgeInsets.all(5),
             child: Icon(
               iconData,
-              color: color,
+              color: onTap != null ? color : Colors.grey[400], //se ontap for null aparece cor de desabilitado
             ),
           ),
         ),
