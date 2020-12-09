@@ -4,6 +4,8 @@ import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/screens/home/components/section_list.dart';
 import 'package:provider/provider.dart';
 import 'package:loja_virtual/screens/home/components/section_staggered.dart';
+import 'package:loja_virtual/models/user_manager.dart';
+import 'package:loja_virtual/screens/home/components/add_section_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -41,11 +43,43 @@ class HomeScreen extends StatelessWidget {
                     color: Colors.white,
                     onPressed: () => Navigator.of(context).pushNamed('/cart'),
                   ),
+                  Consumer2<UserManager, HomeManager>(
+                    builder: (_, userManager, homeManager, __){
+                      if(userManager.adminEnabled) {
+                        if(homeManager.editing){
+                          return PopupMenuButton(
+                            onSelected: (e){
+                              if(e == 'Salvar'){
+                                homeManager.saveEditing();
+                              } else {
+                                homeManager.discardEditing();
+                              }
+                            },
+                            itemBuilder: (_){
+                              return ['Salvar', 'Descartar'].map((e){
+                                return PopupMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                );
+                              }).toList();
+                            },
+                          );
+                        } else {
+                          return IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: homeManager.enterEditing, //o metodo editar chamada notifylistener que faz o builder ser reconstruuido
+                                                                 //assim entra na edição acima
+                          );
+                        }
+                      } else return Container();
+                    },
+                  ),
                 ],
               ),
                 Consumer<HomeManager>(
                   builder: (_, homeManager, __){
-                   final List<Widget> children = homeManager.sections.map<Widget>( //tranforma uma lista de seçoes em widget. pode sr staggled ou list
+                   final List<Widget> children = homeManager.sections.map<Widget>( //transforma uma lista de seçoes em widget.
+                                                                                   // pode ser staggled ou list
                      (section) {
                         switch(section.type){
                          case 'List':
@@ -57,6 +91,9 @@ class HomeScreen extends StatelessWidget {
                        }
                      }
                  ).toList();
+
+                if(homeManager.editing) //se estiver editando cria um novo widget na tela
+                  children.add(AddSectionWidget(homeManager));
 
                 return SliverList(
                   delegate: SliverChildListDelegate(children),

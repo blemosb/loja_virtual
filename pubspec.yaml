@@ -37,6 +37,7 @@ dependencies:
   faker: ^1.2.1 #cria usuarios falsos para testes
   image_picker: ^0.6.7+14
   image_cropper: ^1.3.1
+  uuid: ^2.2.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -11,12 +11,14 @@ class ImagesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<List<dynamic>>(
-      initialValue: product.images,//faz um copia da lista de imagens inicial para qdo houver mudanças nao alterar a original
+      initialValue: List.from(product.images),//faz um copia da lista de imagens inicial para qdo houver mudanças nao alterar a original
+                                              //assim antes de enviar para o firebase dá prá saber se tem imagem nova ou nao
       validator: (images){ //saber se tem imagem na tela de inserção do produto
         if(images.isEmpty)
           return 'Insira ao menos uma imagem';
         return null;
       },
+      onSaved: (images) => product.newImages = images,
       builder: (state){ //state pega o valor de images. images é o valor de entrada. depois pode ser modificada em state abaixo
         void onImageSelected(File file){
           state.value.add(file);

@@ -1,4 +1,4 @@
-class ItemSize { //preço e estoque por tamanho do produto
+class ItemSize { //preço e estoque por tamanho do produto. um size tem varios item sizes com estes valores
 
   ItemSize({this.name, this.price, this.stock});
 
@@ -20,6 +20,14 @@ class ItemSize { //preço e estoque por tamanho do produto
       price: price,
       stock: stock,
     );
+  }
+
+  Map<String, dynamic> toMap(){
+    return {
+      'name': name,
+      'price': price,
+      'stock': stock,
+    };
   }
 
   @override
