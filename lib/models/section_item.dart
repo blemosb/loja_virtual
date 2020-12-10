@@ -1,6 +1,6 @@
 class SectionItem { //model para imagens das seçoes promocoes e novidades
 
-  String image;
+  dynamic image;
   String product;
 
   SectionItem({this.image, this.product});

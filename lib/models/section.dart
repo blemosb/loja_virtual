@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loja_virtual/models/section_item.dart';
+import 'package:flutter/cupertino.dart';
 
-class Section { //modelo que pega uma seçao da home
+class Section extends ChangeNotifier { //modelo que pega uma seçao da home
 
   String name;
   String type;
@@ -16,6 +17,16 @@ class Section { //modelo que pega uma seçao da home
     type = document.data()['type'] as String;
     items = (document.data()['items'] as List).map(
             (i) => SectionItem.fromMap(i as Map<String, dynamic>)).toList();
+  }
+
+  void removeItem(SectionItem item){
+    items.remove(item);
+    notifyListeners();
+  }
+
+  void addItem(SectionItem item){
+    items.add(item);
+    notifyListeners();
   }
 
   Section clone(){

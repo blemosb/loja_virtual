@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
       drawer: CustomDrawer(),
       body: Stack(
         children: <Widget>[
-          Container( //muda a caro de bg da tela
+          Container( //muda a cor de bg da tela
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: const [

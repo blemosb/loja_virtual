@@ -6,13 +6,10 @@ import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget { //título da seção na tela inicial
 
-  const SectionHeader(this.section); //é passado por parâmetro uma seção
-
-  final Section section;
-
   @override
   Widget build(BuildContext context) {
     final homeManager = context.watch<HomeManager>(); //outra forma de acessar ma classe sem passar por parâmetro
+    final section = context.watch<Section>();
 
     if(homeManager.editing){//se estiver editando aparee o título atual e um botão à diretira para excluir seção
       return Row(

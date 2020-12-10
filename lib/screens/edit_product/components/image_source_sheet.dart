@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-class ImageSourceSheet extends StatelessWidget { //abre qdo clica no botao de amera para adicionar uma imagem
+class ImageSourceSheet extends StatelessWidget { //abre qdo clica no botao de camera para adicionar uma imagem
 
   ImageSourceSheet({this.onImageSelected});
 
