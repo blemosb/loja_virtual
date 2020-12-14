@@ -23,7 +23,7 @@ class SectionList extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SectionHeader(),
+            SectionHeader(), //titulo  da lista na tela inicial . ex.: novidades
             SizedBox(
               height: 150,
               child: Consumer<Section>(

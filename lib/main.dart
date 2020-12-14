@@ -13,6 +13,7 @@ import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/screens/cart/cart_screen.dart';
 import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/models/admin_users_manager.dart';
+import 'package:loja_virtual/screens/select_product/select_product_screen.dart';
 
 import 'models/product_manager.dart';
 
@@ -104,6 +105,10 @@ class MyApp extends StatelessWidget {
             case '/cart':
               return MaterialPageRoute(
                   builder: (_) => CartScreen()
+              );
+            case '/select_product':
+              return MaterialPageRoute(
+                  builder: (_) => SelectProductScreen()
               );
             default:
               return MaterialPageRoute(

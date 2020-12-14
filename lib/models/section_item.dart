@@ -17,6 +17,13 @@ class SectionItem { //model para imagens das seçoes promocoes e novidades
     );
   }
 
+  Map<String, dynamic> toMap(){
+    return {
+      'image': image, //url da imagem
+      'product': product, //id do produto
+    };
+  }
+
   @override
   String toString() {
     return 'SectionItem{image: $image, product: $product}';

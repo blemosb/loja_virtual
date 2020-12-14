@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Consumer2<UserManager, HomeManager>(
                     builder: (_, userManager, homeManager, __){
-                      if(userManager.adminEnabled) {
+                      if(userManager.adminEnabled && !homeManager.loading) { //se estiver salvando esconde o botão de editar
                         if(homeManager.editing){
                           return PopupMenuButton(
                             onSelected: (e){
@@ -76,9 +76,18 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-                Consumer<HomeManager>(
+                Consumer<HomeManager>( //começa o desenho de toda tela
                   builder: (_, homeManager, __){
-                   final List<Widget> children = homeManager.sections.map<Widget>( //transforma uma lista de seçoes em widget.
+                    if(homeManager.loading){ //mostra o circulo de carregamento
+                      return SliverToBoxAdapter(
+                        child: LinearProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                          backgroundColor: Colors.transparent,
+                        ),
+                      );
+                    }
+
+                    final List<Widget> children = homeManager.sections.map<Widget>( //transforma uma lista de seçoes em widget.
                                                                                    // pode ser staggled ou list
                      (section) {
                         switch(section.type){

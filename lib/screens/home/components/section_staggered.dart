@@ -30,6 +30,8 @@ class SectionStaggered extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   crossAxisCount: 4,
+                  physics: const NeverScrollableScrollPhysics(), //deixa rolar clicando em qq lugar da lista, senão só rola se clicar fora de
+                                                                //item da lista
                   itemCount: homeManager.editing
                       ? section.items.length + 1
                       : section.items.length,
