@@ -24,7 +24,7 @@ class CartScreen extends StatelessWidget { //tela para exibir o carrinho
               PriceCard( //widget criado para ser um card com o resumo do carrinho
                 buttonText: 'Continuar para Entrega',
                 onPressed: cartManager.isCartValid ? (){ //se o carrinho for válido executa a funçao senao passa null
-
+                  Navigator.of(context).pushNamed('/address');
                 } : null,
               ),
             ],

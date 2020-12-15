@@ -14,6 +14,8 @@ import 'package:loja_virtual/screens/cart/cart_screen.dart';
 import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/models/admin_users_manager.dart';
 import 'package:loja_virtual/screens/select_product/select_product_screen.dart';
+import 'package:loja_virtual/screens/address/address_screen.dart';
+import 'package:loja_virtual/services/cepaberto_service.dart';
 
 import 'models/product_manager.dart';
 
@@ -21,16 +23,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-/*   FirebaseFirestore.instance.collection('pedidos').add(
-      {'preco': 200, 'usuario': 'Tiago'}
-    );*/
-
-    QuerySnapshot snapshot =  await FirebaseFirestore.instance.collection("usuarios")
-                              .get();
-                  for (DocumentSnapshot document in snapshot.docs){
-                    print (document.data());
-                  }
-   
 }
 
 class MyApp extends StatelessWidget {
@@ -105,6 +97,10 @@ class MyApp extends StatelessWidget {
             case '/cart':
               return MaterialPageRoute(
                   builder: (_) => CartScreen()
+              );
+            case '/address':
+              return MaterialPageRoute(
+                  builder: (_) => AddressScreen()
               );
             case '/select_product':
               return MaterialPageRoute(

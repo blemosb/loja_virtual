@@ -4,12 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loja_virtual/models/usuario.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:loja_virtual/models/cepaberto_address.dart';
+import 'package:loja_virtual/services/cepaberto_service.dart';
+import 'package:loja_virtual/models/address.dart';
+import 'package:loja_virtual/screens/address/address_screen.dart';
 
 class CartManager extends ChangeNotifier {
 
   List<CartProduct> items = []; //lista de items da memoria
   num productsPrice = 0.0; //calcula o preco total do carrinho
   Usuario user;
+  Address address;
 
   void updateUser(UserManager userManager){
     user = userManager.user;
@@ -19,6 +24,33 @@ class CartManager extends ChangeNotifier {
       _loadCartItems();
     }
   }
+
+    // ADDRESS
+
+    Future<void> getAddress(String cep) async {
+      final cepAbertoService = CepAbertoService();
+
+      try {
+        final cepAbertoAddress = await cepAbertoService.getAddressFromCep(cep);
+
+        if(cepAbertoAddress != null){
+          address = Address(
+              street: cepAbertoAddress.logradouro,
+              district: cepAbertoAddress.bairro,
+              zipCode: cepAbertoAddress.cep,
+              city: cepAbertoAddress.cidade.nome,
+              state: cepAbertoAddress.estado.sigla,
+              lat: cepAbertoAddress.latitude,
+              long: cepAbertoAddress.longitude
+          );
+          notifyListeners();
+        }
+      } catch (e){
+        debugPrint(e.toString());
+      }
+    }
+
+
 
   Future<void> _loadCartItems() async {
     final QuerySnapshot cartSnap = await user.cartReference.get(); //cartReference foi criado na classe do usuário
