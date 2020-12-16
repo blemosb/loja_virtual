@@ -50,7 +50,10 @@ class CartManager extends ChangeNotifier {
       }
     }
 
-
+  void removeAddress(){
+    address = null;
+    notifyListeners();
+  }
 
   Future<void> _loadCartItems() async {
     final QuerySnapshot cartSnap = await user.cartReference.get(); //cartReference foi criado na classe do usuário

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/screens/address/components/cep_input_field.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:loja_virtual/models/address.dart';
+import 'package:loja_virtual/screens/address/components/address_input_field.dart';
 
 class AddressCard extends StatelessWidget {//primeira opção na tela do cep. label endereço de entrega e capo para digitar cep
   @override
@@ -12,8 +14,7 @@ class AddressCard extends StatelessWidget {//primeira opção na tela do cep. la
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
         child: Consumer<CartManager>(
           builder: (_, cartManager, __){
-            final address = cartManager.address;
-            print(address);
+            final address = cartManager.address ?? Address(); //quando entra address pode ser nulo, então instancia um novo para nao dar erro
 
             return Form(
               child: Column(
@@ -26,7 +27,8 @@ class AddressCard extends StatelessWidget {//primeira opção na tela do cep. la
                       fontSize: 16,
                     ),
                   ),
-                  CepInputField()
+                  CepInputField(address), //campo com label de cep e edit para cep com botão
+                  AddressInputField(address),//tela com endereço retornado da api
                 ],
               ),
             );
