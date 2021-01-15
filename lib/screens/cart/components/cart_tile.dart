@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/cart_product.dart';
 import 'package:loja_virtual/common/custom_icon_button.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CartTile extends StatelessWidget { ///desenha as informacoes no card do cart_screen
 
@@ -22,7 +23,7 @@ class CartTile extends StatelessWidget { ///desenha as informacoes no card do ca
               SizedBox(
                 height: 80,
                 width: 80,
-                child: Image.network(cartProduct.product.images.first),
+                child: Image.network(cartProduct.product.images.first ?? kTransparentImage as String),
               ),
               Expanded(
                 child: Padding(

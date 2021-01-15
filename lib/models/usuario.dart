@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loja_virtual/models/address.dart';
 
 class Usuario { //modelo para usuário
   String email;
@@ -8,12 +9,17 @@ class Usuario { //modelo para usuário
   String id;
   //o padrao é o usuario nao ser admin
   bool admin = false;
-
+  Address address;
 
   Usuario.fromDocument(DocumentSnapshot document){ //pega um usuário do firebase e trandforma em um objeto
     id = document.id;
     nome = document.data()['name'] as String;
     email = document.data()['email'] as String;
+    //consulta se já existe endereço salvo para o usuário
+    if(document.data().containsKey("address")){
+      address = Address.fromMap(
+          document.data()['address'] as Map<String, dynamic>);
+    }
   }
 
   Usuario({String nome, String email, String senha, String id}){
@@ -39,7 +45,14 @@ class Usuario { //modelo para usuário
     return {
       "name": nome,
       "email": email,
+      if(address != null)
+        'address': address.toMap(),
     };
+  }
+
+  void setAddress(Address address){
+    this.address = address;
+    saveData(); //pede para salvar no firebase
   }
 
 }

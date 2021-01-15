@@ -39,7 +39,8 @@ dependencies:
   image_cropper: ^1.3.1
   uuid: ^2.2.2
   dio: ^3.0.10
-  brasil_fields: ^0.6.0
+  brasil_fields: ^0.6.0  # cep aberto
+  geolocator: ^6.1.13  #calcular distâncias (google)
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

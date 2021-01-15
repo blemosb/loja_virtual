@@ -94,7 +94,7 @@ class Product extends ChangeNotifier { //model do produto
     }
     return lowest;
   }
-//pega todos os tamanhos e transgorma em uma ista de mapas
+//pega todos os tamanhos e transforma em uma lista de mapas
   List<Map<String, dynamic>> exportSizeList(){
     return sizes.map((size) => size.toMap()).toList(); //pega cada size e transforma em um mapa. o conjunto destes mapas serão uma lista
                                                         //esse toMap é uma funcção do item_size que transforma cada item size um um mapa

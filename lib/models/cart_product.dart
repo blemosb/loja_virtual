@@ -11,9 +11,38 @@ class CartProduct extends ChangeNotifier { //model do item do carrinho
   String size;
   String id; //id do item do carrinho
 
-  Product product;
+  num fixedPrice;
 
-  CartProduct.fromProduct(this.product){
+  Product _product;
+  Product get product => _product;
+  set product(Product value){
+    _product = value;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> toOrderItemMap(){
+    return {
+      'pid': productId,
+      'quantity': quantity,
+      'size': size,
+      'fixedPrice': fixedPrice ?? unitPrice, //se nao tiver preço setado usa o unitPrice
+    };
+  }
+
+  CartProduct.fromMap(Map<String, dynamic> map){
+    productId = map['pid'] as String;
+    quantity = map['quantity'] as int;
+    size = map['size'] as String;
+    fixedPrice = map['fixedPrice'] as num;
+
+    firestore.document('products/$productId').get().then(
+            (doc) {
+          product = Product.fromDocument(doc);
+        }
+    );
+  }
+
+  CartProduct.fromProduct(this._product){
     productId = product.id;
     quantity = 1;
     size = product.selectedSize.name;
@@ -29,7 +58,6 @@ class CartProduct extends ChangeNotifier { //model do item do carrinho
     firestore.doc('products/$productId').get().then(
             (doc) {
           product = Product.fromDocument(doc);
-          notifyListeners(); //para qdo entrar pela primeira vez no carrinho já vir cm os precos
         } //pega as informaçoes do produto que está inserido no item do carrinho para o preç sempre vir atualizado. por isso o preço n é armazenado no carrinho
     );
   }

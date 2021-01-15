@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:loja_virtual/models/address.dart';
 import 'package:loja_virtual/screens/address/components/address_input_field.dart';
 
-class AddressCard extends StatelessWidget {//primeira opção na tela do cep. label endereço de entrega e capo para digitar cep
+class AddressCard extends StatelessWidget {//tela que mostra o cep, endereço e resumo do pedido
   @override
   Widget build(BuildContext context) {
     return Card(

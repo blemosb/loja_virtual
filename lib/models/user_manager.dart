@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual/helpers/firebase_errors.dart';
 import 'package:loja_virtual/models/usuario.dart';
+
 class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 
   UserManager(){

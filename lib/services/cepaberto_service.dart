@@ -21,7 +21,9 @@ class CepAbertoService {
         return Future.error('CEP Inválido');
       }
 
-      print(response.data);
+      final CepAbertoAddress address = CepAbertoAddress.fromMap(response.data);
+
+      return address;
     } on DioError catch (e){ //se deu erro na requisição, pode ser falta de internet por exemplo...
       return Future.error('Erro ao buscar CEP');
     }

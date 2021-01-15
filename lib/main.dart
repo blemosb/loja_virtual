@@ -15,9 +15,9 @@ import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/models/admin_users_manager.dart';
 import 'package:loja_virtual/screens/select_product/select_product_screen.dart';
 import 'package:loja_virtual/screens/address/address_screen.dart';
-import 'package:loja_virtual/services/cepaberto_service.dart';
-
 import 'models/product_manager.dart';
+import 'package:loja_virtual/screens/checkout/checkout_screen.dart';
+import 'package:loja_virtual/models/orders_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MultiProvider(
-      providers: [
+      providers: [ //já cria todos no momento de abertura do app
         ChangeNotifierProvider(
           create: (_) => UserManager(),
           lazy: false,
@@ -46,6 +46,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => HomeManager(),
           lazy: false,
+        ),
+        ChangeNotifierProxyProvider<UserManager, OrdersManager>( //sempre que um usuário for alterado busca os pedidos deste no firebase
+          create: (_) => OrdersManager(),
+          lazy: false,
+          update: (_, userManager, ordersManager) =>
+          ordersManager..updateUser(userManager.user),
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(//sempre que o usuario manager for atualizado, avisa o cartmanager. Por isso proxy
           create: (_) => CartManager(),
@@ -80,6 +86,10 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (_) => SignUpScreen()
               );
+            case '/checkout':
+              return MaterialPageRoute(
+                  builder: (_) => CheckoutScreen()
+              );
             case '/login':
               return MaterialPageRoute(
                   builder: (_) => LoginScreen()
@@ -96,7 +106,8 @@ class MyApp extends StatelessWidget {
               );
             case '/cart':
               return MaterialPageRoute(
-                  builder: (_) => CartScreen()
+                  builder: (_) => CartScreen(),
+                  settings: settings
               );
             case '/address':
               return MaterialPageRoute(
@@ -108,7 +119,8 @@ class MyApp extends StatelessWidget {
               );
             default:
               return MaterialPageRoute(
-                builder: (_) => BaseScreen()
+                  builder: (_) => BaseScreen(),
+                  settings: settings //para funcionar o pop until
               );
           }
         },

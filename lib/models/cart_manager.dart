@@ -4,10 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loja_virtual/models/usuario.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:loja_virtual/models/cepaberto_address.dart';
 import 'package:loja_virtual/services/cepaberto_service.dart';
 import 'package:loja_virtual/models/address.dart';
-import 'package:loja_virtual/screens/address/address_screen.dart';
+import 'package:geolocator/geolocator.dart';
 
 class CartManager extends ChangeNotifier {
 
@@ -15,21 +14,88 @@ class CartManager extends ChangeNotifier {
   num productsPrice = 0.0; //calcula o preco total do carrinho
   Usuario user;
   Address address;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  num deliveryPrice;
+  num get totalPrice => productsPrice + (deliveryPrice ?? 0); //só soma se delivery for diferente de nulo
+  bool _loading = false;
+  bool get loading => _loading;
+
+  set loading(bool value){
+    _loading = value;
+    notifyListeners();
+  }
+
+  //seta o endereço e chama metodo para calcular o delivery
+  Future<void> setAddress(Address address) async {
+    loading = true;
+    this.address = address;
+
+    if(await calculateDelivery(address.lat, address.long)){
+      notifyListeners();
+      user.setAddress(address); //salva o endereço do usuário somente se ele estiver no raio de entrega
+      loading = false;
+    } else {
+      loading = false;
+      return Future.error('Endereço fora do raio de entrega :(');
+    }
+  }
+
+  void clear() {
+    for(final cartProduct in items){
+      user.cartReference.doc(cartProduct.id).delete();
+    }
+    items.clear();
+    notifyListeners();
+  }
+
+  Future<bool> calculateDelivery(double lat, double long) async {
+    final DocumentSnapshot doc = await firestore.doc('aux/delivery').get();
+
+    final latStore = doc.data()['lat'] as double;
+    final longStore = doc.data()['long'] as double;
+    final base = doc.data()['base'] as num;
+    final km = doc.data()['km'] as num;
+    final maxkm = doc.data()['maxkm'] as num;
+
+    double dis = await Geolocator.distanceBetween(latStore, longStore, lat, long);
+//originalmente a distância vem em metros. transforma para kms
+    dis /= 1000.0;
+    debugPrint('Distance $dis');
+
+    if(dis > maxkm){
+      return false;
+    }
+
+    deliveryPrice = base + dis * km;
+    return true;
+  }
 
   void updateUser(UserManager userManager){
     user = userManager.user;
+    productsPrice = 0.0;
     items.clear(); //sempre q atualizar o usuário limpa o carrinho
-
+    removeAddress();
     if(user != null){
       _loadCartItems();
+      _loadUserAddress(); //já verifica em tempo real se tem endereço cadastrado e calcula o delivery para qdo abrir o carrinho ganhar tempo
     }
   }
+
+  Future<void> _loadUserAddress() async {
+    if(user.address != null && await calculateDelivery(user.address.lat, user.address.long)){
+      address = user.address;
+      notifyListeners();
+    }
+  }
+
+  //endereço será válido se address e preço não forem nulos
+  bool get isAddressValid => address != null && deliveryPrice != null;
 
     // ADDRESS
 
     Future<void> getAddress(String cep) async {
+      loading = true;
       final cepAbertoService = CepAbertoService();
-
       try {
         final cepAbertoAddress = await cepAbertoService.getAddressFromCep(cep);
 
@@ -45,13 +111,18 @@ class CartManager extends ChangeNotifier {
           );
           notifyListeners();
         }
+        loading = false;
       } catch (e){
         debugPrint(e.toString());
+        loading = false;
+        return Future.error('CEP Inválido');
       }
     }
 
+//remove para limpar a tela do endereço no carrinho
   void removeAddress(){
     address = null;
+    deliveryPrice = null;
     notifyListeners();
   }
 
@@ -82,7 +153,7 @@ class CartManager extends ChangeNotifier {
 
   void removeOfCart(CartProduct cartProduct){
     items.removeWhere((p) => p.id == cartProduct.id); //remove da lista na memoria
-    user.cartReference.document(cartProduct.id).delete(); //remove do firebase
+    user.cartReference.doc(cartProduct.id).delete(); //remove do firebase
     cartProduct.removeListener(_onItemUpdated);
     notifyListeners(); //aciona a cart_screen para rebuildar
   }

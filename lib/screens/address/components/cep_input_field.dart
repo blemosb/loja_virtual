@@ -1,52 +1,72 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:brasil_fields/brasil_fields.dart';
-import 'package:loja_virtual/models/cart_manager.dart';
-import 'package:provider/provider.dart';
 import 'package:loja_virtual/common/custom_icon_button.dart';
 import 'package:loja_virtual/models/address.dart';
+import 'package:loja_virtual/models/cart_manager.dart';
+import 'package:provider/provider.dart';
 
-class CepInputField extends StatelessWidget { //tela para usuário digitar um cep. contem um campo editavel e um botão
-
-  final TextEditingController cepController = TextEditingController();
-
-  CepInputField(this.address);
+//statefull pq qdo rebuilda se o cep for inválido ele tem q manter o valor de cep para o usuário n ter q digitar de novo
+class CepInputField extends StatefulWidget {
+  const CepInputField(this.address);
 
   final Address address;
 
   @override
+  _CepInputFieldState createState() => _CepInputFieldState();
+}
+
+class _CepInputFieldState extends State<CepInputField> {
+  final TextEditingController cepController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+    final cartManager = context.watch<CartManager>(); //watch é pq está dentro do build
     final primaryColor = Theme.of(context).primaryColor;
-    if(address.zipCode != null) //se o cep estiver digitado exibe também
+
+    if (widget.address.zipCode == null)
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          TextFormField( //campo editavel para digitar cep
+          TextFormField(
+            enabled: !cartManager.loading, //só fica habilitado se não estiver carregando
             controller: cepController,
             decoration: const InputDecoration(
-                isDense: true, //diminui a altura do campo
-                labelText: 'CEP',
-                hintText: '12.345-678'
-            ),
+                isDense: true, labelText: 'CEP', hintText: '12.345-678'),
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, //apesar de abrir numeros, tb tem outros caracteres tipo hífen...aí filtra prá entrar numeros
-              CepInputFormatter(), //passa o cep para o padrão brasileiro
+              FilteringTextInputFormatter.digitsOnly,
+              CepInputFormatter(),
             ],
             keyboardType: TextInputType.number,
-            validator: (cep){
-              if(cep.isEmpty)
+            validator: (cep) {
+              if (cep.isEmpty)
                 return 'Campo obrigatório';
-              else if(cep.length != 10)
-                return 'CEP Inválido';
+              else if (cep.length != 10) return 'CEP Inválido';
               return null;
             },
           ),
-          RaisedButton( //botão para buscar o cep
-            onPressed: (){
-              if(Form.of(context).validate()){
-                context.read<CartManager>().getAddress(cepController.text); //função que buscará o cep da API
-              }
-            },
+          if (cartManager.loading) //se estiver carregando mostra uma barra de carregamento
+            LinearProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(primaryColor),
+              backgroundColor: Colors.transparent,
+            ),
+          RaisedButton(
+            onPressed: !cartManager.loading //se naõ estiver carregando deixa habilitado para buscar
+                ? () async {
+                    if (Form.of(context).validate()) {
+                      try {
+                        await context
+                            .read<CartManager>()
+                            .getAddress(cepController.text);
+                      } catch (e) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text('$e'),
+                          backgroundColor: Colors.red,
+                        ));
+                      }
+                    }
+                  }
+                : null, //se estiver carregando desabilita o botão
             textColor: Colors.white,
             color: primaryColor,
             disabledColor: primaryColor.withAlpha(100),
@@ -61,23 +81,21 @@ class CepInputField extends StatelessWidget { //tela para usuário digitar um ce
           children: <Widget>[
             Expanded(
               child: Text(
-                'CEP: ${address.zipCode}',
-                style: TextStyle(
-                    color: primaryColor,
-                    fontWeight: FontWeight.w600
-                ),
+                'CEP: ${widget.address.zipCode}',
+                style:
+                    TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
               ),
             ),
             CustomIconButton(
               iconData: Icons.edit,
               color: primaryColor,
               size: 20,
-              onTap: (){
+              onTap: () {
                 context.read<CartManager>().removeAddress();
               },
             ),
           ],
         ),
-    );
+      );
   }
 }

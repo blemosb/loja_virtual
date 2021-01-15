@@ -22,7 +22,7 @@ class CustomIconButton extends StatelessWidget { //customização de botões par
             child: Icon(
               iconData,
               color: onTap != null ? color : Colors.grey[400], //se ontap for null aparece cor de desabilitado
-              size: size ?? 24,
+              size: size ?? 24, //se for passado nulo pega o tam 24 q é o padrao do flutter
             ),
           ),
         ),
