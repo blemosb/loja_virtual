@@ -36,14 +36,16 @@ class Section extends ChangeNotifier { //modelo que pega uma seçao da home
 
   Future<void> delete() async {
     await firestoreRef.delete(); //deleta no bd primeiro
-    for(final item in items){ //deleta as imagens depoiw
-      try {//se for imagem do goolge
-        final ref = await storage.getReferenceFromUrl(
-            item.image as String
-        );
-        await ref.delete();
-        // ignore: empty_catches
-      } catch (e){}
+    for(final item in items){ //deleta as imagens depois
+      if((item.image as String).contains('firebase')) {  //tem q verificar se tem firebase no nome senõ gera exceção...
+        try { //se for imagem do google
+          final ref = await storage.getReferenceFromUrl(
+              item.image as String
+          );
+          await ref.delete();
+          // ignore: empty_catches
+        } catch (e) {}
+      }
     }
   }
 
@@ -74,7 +76,8 @@ class Section extends ChangeNotifier { //modelo que pega uma seçao da home
     }
 //verificar se algum item foi excluido em tempod e execução depois de vir do firebase. se sim, exclui a imagem do firebase
     for(final original in originalItems){
-      if(!items.contains(original)){ //se não contêm é pq foi editado
+      if(!items.contains(original)
+          && (original.image as String).contains('firebase')){ //se não contêm é pq foi editado
         try { //tem imagem da internet, para não dar erro na deleção...
           final ref = await storage.getReferenceFromUrl(
               original.image as String

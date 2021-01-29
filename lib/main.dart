@@ -13,11 +13,15 @@ import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/screens/cart/cart_screen.dart';
 import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/models/admin_users_manager.dart';
+import 'package:loja_virtual/screens/confirmation/confirmation_screen.dart';
 import 'package:loja_virtual/screens/select_product/select_product_screen.dart';
 import 'package:loja_virtual/screens/address/address_screen.dart';
+import 'package:loja_virtual/screens/products/products_screen.dart';
 import 'models/product_manager.dart';
 import 'package:loja_virtual/screens/checkout/checkout_screen.dart';
 import 'package:loja_virtual/models/orders_manager.dart';
+import 'package:loja_virtual/models/order.dart';
+import 'package:loja_virtual/models/admin_orders_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,8 +68,15 @@ class MyApp extends StatelessWidget {
           lazy: false, //já carrega qdo usuário admin estiver logado. senao teria q esperar baixar qdo entrasse na tela de usuarios
           update: (_, userManager, adminUsersManager) => //baixar lista de admins agora
           adminUsersManager..updateUser(userManager),
+    ),
+        ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
+        create: (_) => AdminOrdersManager(),
+        lazy: false,
+        update: (_, userManager, adminOrdersManager) =>
+        adminOrdersManager..updateAdmin(
+        adminEnabled: userManager.adminEnabled
+        ),
         )
-        ,
       ],
       child: MaterialApp(
         title: 'Loja do Bruno',
@@ -79,12 +90,15 @@ class MyApp extends StatelessWidget {
           ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/base', //define as telas do app para navegação
         onGenerateRoute: (settings){
           switch(settings.name){
             case '/signup':
               return MaterialPageRoute(
                   builder: (_) => SignUpScreen()
+              );
+            case '/products':
+              return MaterialPageRoute(
+                  builder: (_) => ProductsScreen()
               );
             case '/checkout':
               return MaterialPageRoute(
@@ -104,6 +118,12 @@ class MyApp extends StatelessWidget {
                     settings.arguments as Product
                   )
               );
+            case '/confirmation':
+              return MaterialPageRoute(
+                  builder: (_) => ConfirmationScreen(
+                      settings.arguments as Order
+                  )
+              );
             case '/cart':
               return MaterialPageRoute(
                   builder: (_) => CartScreen(),
@@ -117,10 +137,11 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (_) => SelectProductScreen()
               );
+            case '/':
             default:
               return MaterialPageRoute(
                   builder: (_) => BaseScreen(),
-                  settings: settings //para funcionar o pop until
+                  settings: settings
               );
           }
         },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/screens/cart/components/cart_tile.dart';
+import 'package:loja_virtual/screens/products/products_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:loja_virtual/common/price_card.dart';
 import 'package:loja_virtual/common/empty_card.dart';
@@ -40,10 +41,12 @@ class CartScreen extends StatelessWidget { //tela para exibir o carrinho
                 children: [
                   new GestureDetector(
                   onTap: () {
-                  Navigator.pop(context);
+                    Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (BuildContext context) => ProductsScreen()
+                    ));
                   },
                   child: new Text(
-                    'Adicionar mais itens no carrinho',
+                    'Adicionar mais itens ao carrinho',
                     style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                   ),

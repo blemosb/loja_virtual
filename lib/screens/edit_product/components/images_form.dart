@@ -41,7 +41,7 @@ class ImagesForm extends StatelessWidget {
                       Align( //cria um botão alinhado superior a direita para remover a imagem atual
                         alignment: Alignment.topRight,
                         child: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: Icon(Icons.remove),
                           color: Colors.red,
                           onPressed: (){
                             state.value.remove(image);

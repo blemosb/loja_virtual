@@ -3,7 +3,7 @@ import 'package:loja_virtual/models/item_size.dart';
 import 'package:loja_virtual/models/product.dart';
 import 'package:provider/provider.dart';
 
-class SizeWidget extends StatelessWidget { //mostrar opçoes de tamanho embaixo da tela
+class SizeWidget extends StatelessWidget { //mostrar opçoes de tamanho embaixo da tela do carrinho
 
   const SizeWidget({this.size});
 

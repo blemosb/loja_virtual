@@ -43,7 +43,7 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
     await order.save();
     cartManager.clear();
 
-    onSuccess();
+    onSuccess(order);
     loading = false;
   }
   Future<int> _getOrderId() async {

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/admin_users_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:loja_virtual/common/custom_drawer/custom_drawer.dart';
+import 'package:loja_virtual/models/admin_orders_manager.dart';
+import 'package:loja_virtual/models/page_manager.dart';
 
-class AdminUsersScreen extends StatelessWidget {
+class AdminUsersScreen extends StatelessWidget { //Tela onde o admin lista todos os usuários do app
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +33,12 @@ class AdminUsersScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
+                onTap: (){ //clica no usuário deseja e filtra pelo indice dele
+                  context.read<AdminOrdersManager>().setUserFilter(
+                      adminUsersManager.users[index]
+                  );
+                  context.read<PageManager>().setPage(4); //direciona para a página de pedidos (filtrada pelo usuario acima)
+                },
               );
             },
             highlightTextStyle: TextStyle(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/common/price_card.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/models/checkout_manager.dart';
+import 'package:loja_virtual/screens/orders/orders_screen.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -54,9 +55,21 @@ class CheckoutScreen extends StatelessWidget {
                           Navigator.of(context).popUntil(
                                   (route) => route.settings.name == '/cart');
                         },
-                        onSuccess: (){
+                        onSuccess: (order){ //depois de processar o pgto vai para a tela de pedidos e limpa a pilha de telas para não voltar para outra
+                          //o modal embaixo é para qdo clicar no botão de voltar ir para a tela principal
+                         /* Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => OrdersScreen(),
+                            ),
+                              ModalRoute.withName("/base")
+                          );*/
                           Navigator.of(context).popUntil(
-                                  (route) => route.settings.name == '/base');
+                                  (route) => route.settings.name == '/');
+                          Navigator.of(context).pushNamed(
+                              '/confirmation',
+                              arguments: order
+                          );
                         }
                     );
                   },

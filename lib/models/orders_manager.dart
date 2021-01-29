@@ -23,14 +23,27 @@ class OrdersManager extends ChangeNotifier {
       _listenToOrders();
     }
   }
-//sempre q houvr uma mudança no spedidos ele lê de novo toda a coleção order e transforma em uma lista de order
+//sempre q houvr uma mudança nos pedidos ele lê de novo toda a coleção order e transforma em uma lista de order
   void _listenToOrders(){
     _subscription = firestore.collection('orders').where('user', isEqualTo: user.id)
         .snapshots().listen(
             (event) {
-          orders.clear();
-          for(final doc in event.docs){
-            orders.add(Order.fromDocument(doc));
+              for(final change in event.docChanges){
+                switch(change.type){
+                  case DocumentChangeType.added:
+                    orders.add(
+                        Order.fromDocument(change.doc)
+                    );
+                    break;
+                  case DocumentChangeType.modified:
+                    final modOrder = orders.firstWhere(
+                            (o) => o.orderId == change.doc.id);
+                    modOrder.updateFromDocument(change.doc);
+                    break;
+                  case DocumentChangeType.removed:
+                    debugPrint('Deu problema sério!!!');
+                    break;
+                }
           }
 
           notifyListeners();

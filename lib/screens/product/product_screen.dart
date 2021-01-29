@@ -26,7 +26,7 @@ class ProductScreen extends StatelessWidget { //tela de detalhamento do produto
           actions: <Widget>[ //as actions são os botoes que aparecem na appbar
             Consumer<UserManager>( //monitora userManager. so vai aparecer opcao se for admin
               builder: (_, userManager, __){
-                if(userManager.adminEnabled){
+                if(userManager.adminEnabled && !product.deleted){
                   return IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: (){
@@ -105,51 +105,65 @@ class ProductScreen extends StatelessWidget { //tela de detalhamento do produto
                         fontSize: 16
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 8),
-                    child: Text(
-                      'Tamanho',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500
+                  if(product.deleted)
+          Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      child: Text(
+        'Este produto não está mais disponível',
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.red
+        ),
+      ),
+          )
+                  else
+                    ...[ //expansão para mais de uma instrução no else, no caso padding e wrap
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, bottom: 8),
+                        child: Text(
+                          'Tamanhos',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  Wrap( //vai preenchendo horizontalmente até chegar ao final da tela. se chegar vai para baixo
-                    spacing: 8,  //espaçamento lateral entre os items
-                    runSpacing: 8, // espaçamento vertical
-                    children: product.sizes.map((s){
-                      return SizeWidget(size: s);
-                    }).toList(),
-                  ),
-                  SizedBox(height: 20,),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: product.sizes.map((s){
+                          return SizeWidget(size: s);
+                        }).toList(),
+                      ),
+                    ],
+                  const SizedBox(height: 20,),
                   if(product.hasStock)
-                      Consumer2 <UserManager,Product>(  //rastreia duas classes ao mesmo tempo
-                        builder: (_,userManager, product, __){
-                          return SizedBox(
-                            height: 44,
-                            child: RaisedButton(
-                              onPressed: product.selectedSize != null ? () {
-                                if (userManager.isLoggedIn){
-                                  context.read<CartManager>().addToCart(product);
-                                  Navigator.of(context).pushNamed('/cart');
-                                }
-                                else {
-                                  Navigator.of(context).pushNamed('/login');
-                                }
-                              } : null, //se nao tiver nenhum tam selecionado desabilita o botao
-                              color:  primaryColor,
-                              textColor:  Colors.white,
-                              child: Text(
-                                userManager.isLoggedIn
-                                    ? 'Adicionar ao Carrinho'
-                                    : 'Entre para Comprar',
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                    Consumer2<UserManager, Product>(
+                      builder: (_, userManager, product, __){
+                        return SizedBox(
+                          height: 44,
+                          child: RaisedButton(
+                            onPressed: product.selectedSize != null ? (){
+                              if(userManager.isLoggedIn){
+                                context.read<CartManager>().addToCart(product);
+                                Navigator.of(context).pushNamed('/cart');
+                              } else {
+                                Navigator.of(context).pushNamed('/login');
+                              }
+                            } : null,
+                            color: primaryColor,
+                            textColor: Colors.white,
+                            child: Text(
+                              userManager.isLoggedIn
+                                  ? 'Adicionar ao Carrinho'
+                                  : 'Entre para Comprar',
+                              style: const TextStyle(fontSize: 18),
                             ),
-                          );
-                        },
-                      )
+                          ),
+                        );
+                      },
+                    )
                 ],
               ),
             )

@@ -5,6 +5,8 @@ import 'package:loja_virtual/screens/edit_product/components/sizes_form.dart';
 import 'package:loja_virtual/models/product_manager.dart';
 import 'package:provider/provider.dart';
 
+import 'delete_product_dialog.dart';
+
 class EditProductScreen extends StatelessWidget { //tela para editar produto
 
   EditProductScreen(Product p) : //se p for null cria um novo produto. necessario pq esta tela pode vim do pedido de editar produto ou criar
@@ -25,13 +27,26 @@ class EditProductScreen extends StatelessWidget { //tela para editar produto
         appBar: AppBar(
           title: Text(editing ? 'Editar Produto' : 'Criar Produto'), //checa se esta editando ou criando anuncio
           centerTitle: true,
+          actions: <Widget>[ //botões que ficam no canto da appbar
+            if(editing) //só aparece se estiver editando
+              IconButton(
+                icon: Icon(Icons.delete), //apagar produto
+                onPressed: (){
+                  showDialog(context: context,
+                      builder: (_) => DeleteProductDialog(product) //alert dialog para confirmar o cancelamento
+                  );
+               //   context.read<ProductManager>().delete(product);
+                 // Navigator.of(context).pop();
+                },
+              )
+          ],
         ),
         backgroundColor: Colors.white,
         body: Form(
           key: formKey,
           child: ListView(
             children: <Widget>[
-              ImagesForm(product), //formulrio customizado para mostrar as imagens do produto
+              ImagesForm(product), //formulario customizado para mostrar as imagens do produto
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(

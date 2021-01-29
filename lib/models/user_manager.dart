@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual/helpers/firebase_errors.dart';
 import 'package:loja_virtual/models/usuario.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 
@@ -24,6 +25,43 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
   bool get loading {
     return _loading;
   }
+
+  Future<void> facebookLogin({Function onFail, Function onSuccess}) async {
+    loading = true;
+
+    final result = await FacebookLogin().logIn(['email', 'public_profile']); //quais informações do usuário vc tera acesso
+
+    switch(result.status){
+      case FacebookLoginStatus.loggedIn:
+        final credential = FacebookAuthProvider.credential(result.accessToken.token);
+        final authResult = await auth.signInWithCredential(credential); //autentica no firebase com essa credential
+
+        if(authResult.user != null){
+          final firebaseUser = authResult.user;
+//cria um usuário para guardar as informações no firebase
+          user = Usuario(
+              id: firebaseUser.uid,
+              nome: firebaseUser.displayName,
+              email: firebaseUser.email
+          );
+
+          await user.saveData();
+
+          onSuccess();
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        break;
+      case FacebookLoginStatus.error:
+        onFail(result.errorMessage);
+        break;
+    }
+
+    loading = false;
+
+  }
+
+
 
   set loading(bool value){
     _loading = value;

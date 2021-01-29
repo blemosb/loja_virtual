@@ -15,6 +15,7 @@ class Product extends ChangeNotifier { //model do produto
   List<ItemSize> sizes;
   List<dynamic> newImages; //para saber se novas imagens foram adicionadas para o produto durante uma edição.
                             //é dinamico porque pode ter url de string das imagens (vem do firebase) ou file para fotos adicionadas na edição
+  bool deleted;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -32,7 +33,8 @@ class Product extends ChangeNotifier { //model do produto
 
 
 
-  Product({this.id, this.name, this.description, this.images, this.sizes}){
+  Product({this.id, this.name, this.description, this.images, this.sizes,
+    this.deleted = false}){ //se não passar valor de deleted é false por default
     images = images ?? []; //se n receber um valor de imagens no parametro cria uma lista vazia
     sizes = sizes ?? [];
   }
@@ -44,6 +46,7 @@ class Product extends ChangeNotifier { //model do produto
       description: description,
       images: List.from(images),
       sizes: sizes.map((size) => size.clone()).toList(), //pega cada item da lista de sizes, clonando e transformando em uma nova lista
+      deleted: deleted,
     );
   }
 
@@ -54,7 +57,7 @@ class Product extends ChangeNotifier { //model do produto
     images = List<String>.from(document.data()['images'] as List<dynamic>);
     sizes = (document.data()['sizes'] as List<dynamic> ?? []).map( //se nao tiver tamanho no firebase, atribui uma lista vazia
             (s) => ItemSize.fromMap(s as Map<String, dynamic>)).toList();
-
+    deleted = (document.data()['deleted'] ?? false) as bool; //se essa opção n vier do firebase seta como false
   }
 
   ItemSize _selectedSize; //se o tamanho está selecionado ou nao
@@ -75,7 +78,7 @@ class Product extends ChangeNotifier { //model do produto
   }
 
   bool get hasStock {
-    return totalStock > 0;
+    return totalStock > 0 && !deleted;
   }
 
   ItemSize findSize(String name){
@@ -89,7 +92,7 @@ class Product extends ChangeNotifier { //model do produto
   num get basePrice { //pega o menor preço dentre todos os tamnahos q tem no estoque
     num lowest = double.infinity;
     for(final size in sizes){
-      if(size.price < lowest && size.hasStock)
+      if(size.price < lowest)
         lowest = size.price;
     }
     return lowest;
@@ -99,6 +102,10 @@ class Product extends ChangeNotifier { //model do produto
     return sizes.map((size) => size.toMap()).toList(); //pega cada size e transforma em um mapa. o conjunto destes mapas serão uma lista
                                                         //esse toMap é uma funcção do item_size que transforma cada item size um um mapa
   }
+//criado um campo para avisar se o produto foi deletado ou não. se apagasse do firebase iria dar erro em pedidos que tenha esse produto
+  void delete(){
+    firestoreRef.update({'deleted': true});
+  }
 
   Future<void> save() async { //salva um produto no firebase
     loading = true;
@@ -106,6 +113,7 @@ class Product extends ChangeNotifier { //model do produto
       'name': name,
       'description': description,
       'sizes': exportSizeList(),
+      'deleted': deleted
     };
 
 //atualiza name, descricao e tamanho**********************************************8
@@ -134,7 +142,7 @@ class Product extends ChangeNotifier { //model do produto
     }
 //SE UMA IMAGEM ORIGINAL NÃO ESTÁ EM NOVAS IMAGENS ENTÃO APAGA ESTA IMAGEM DO STORAGE
     for(final image in images){
-      if(!newImages.contains(image)){
+      if(!newImages.contains(image) && image.contains('firebase')){ //tem q verificar se tem firebase no nome senõ gera exceção...
         try {
           final ref = await storage.getReferenceFromUrl(image);
           await ref.delete();

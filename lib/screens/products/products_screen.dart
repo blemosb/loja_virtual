@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'components/product_list_tile.dart';
 import 'components/search_dialog.dart';
+import 'package:loja_virtual/models/product.dart';
 
 class ProductsScreen extends StatelessWidget { //tela onde sao exibidos todos os produtos
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,6 @@ class ProductsScreen extends StatelessWidget { //tela onde sao exibidos todos os
         builder: (_, productManager, __){
           final filteredProducts = productManager.filteredProducts;
           return ListView.builder(
-              padding: const EdgeInsets.all(4),
               itemCount: filteredProducts.length,
               itemBuilder: (_, index){
                 return ProductListTile(filteredProducts[index]);

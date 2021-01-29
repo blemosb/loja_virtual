@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Loja do Bruno</string>
+
+    <string name="facebook_app_id">1581507332032377</string>
+
+    <string name="fb_login_protocol_scheme">fb1581507332032377</string>
+
+</resources>

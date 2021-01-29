@@ -10,8 +10,10 @@ class ProductManager extends ChangeNotifier{
 
   List<Product> allProducts = [];
 
-  ProductManager(){
-    _loadAllProducts();
+  ProductManager({Product product}){
+
+    if (product==null) //coloquei para ler product manager na tela q exclui produto, para nao ler a toa
+      _loadAllProducts();
   }
 
   String get search => _search;
@@ -38,9 +40,16 @@ class ProductManager extends ChangeNotifier{
   }
 
   Future<void> _loadAllProducts() async{
-    final QuerySnapshot snapProducts = await firestore.collection("products").get();
+    final QuerySnapshot snapProducts = await firestore.collection('products')
+        .where('deleted', isEqualTo: false).get(); //só vem produtos q n foram deletados
     allProducts = snapProducts.docs.map(
         (d) => Product.fromDocument(d)).toList();
+    notifyListeners();
+  }
+
+  void delete(Product product){
+    product.delete(); //deleta do firebase
+    allProducts.removeWhere((p) => p.id == product.id); //deleta da lista do app de produtos
     notifyListeners();
   }
 

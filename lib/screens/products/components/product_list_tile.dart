@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/product.dart';
 
 class ProductListTile extends StatelessWidget {
-
   final Product product;
 
   const ProductListTile(this.product);
@@ -11,27 +10,34 @@ class ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed('/product', arguments: product); //se clicar no card abre o detalhe do produto
+        Navigator.of(context).pushNamed('/product',
+            arguments: product); //se clicar no card abre o detalhe do produto
       },
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4)
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Container(
           height: 100,
           padding: const EdgeInsets.all(8),
-          child: Row( //row é horizontal
-            children: <Widget> [
-                AspectRatio( //aspect rtio de 1 deixa uma imagem quadrada
-                    aspectRatio: 1,
-                    child: Image.network(product.images.first),
-                ),
-              const SizedBox(width: 16,),
-              Expanded( //pega o espaco q sobrou na row
-                child: Column( //column é vertical
+          child: Row(
+            //row é horizontal
+            children: <Widget>[
+              AspectRatio(
+                //aspect rtio de 1 deixa uma imagem quadrada
+                aspectRatio: 1,
+                child: Image.network(product.images.first),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                //pega o espaco q sobrou na row
+                child: Column(
+                  //column é vertical
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, //espalaha para usar o espaço vertical
-                  children: <Widget> [
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceEvenly, //espalaha para usar o espaço vertical
+                  children: <Widget>[
                     Text(
                       product.name,
                       style: TextStyle(
@@ -44,7 +50,7 @@ class ProductListTile extends StatelessWidget {
                       child: Text(
                         'A partir de',
                         style: TextStyle(
-                          color:  Colors.grey,
+                          color: Colors.grey,
                           fontSize: 12,
                         ),
                       ),
@@ -52,11 +58,18 @@ class ProductListTile extends StatelessWidget {
                     Text(
                       'R\$ ${product.basePrice.toStringAsFixed(2)}',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor),
                     ),
+                    if (!product.hasStock)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          'Sem estoque',
+                          style: TextStyle(color: Colors.red, fontSize: 10),
+                        ),
+                      )
                   ],
                 ),
               )

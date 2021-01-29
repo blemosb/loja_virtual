@@ -41,6 +41,11 @@ dependencies:
   dio: ^3.0.10
   brasil_fields: ^0.6.0  # cep aberto
   geolocator: ^6.1.13  #calcular distâncias (google)
+  sliding_up_panel: ^1.0.2
+  screenshot: ^0.2.0
+  gallery_saver: ^2.0.3
+  flutter_signin_button: ^1.1.0
+  flutter_facebook_login: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
