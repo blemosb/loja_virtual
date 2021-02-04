@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:loja_virtual/helpers/firebase_errors.dart';
 import 'package:loja_virtual/models/usuario.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 
   UserManager(){
-    _loadCurrentUser();
+    loadCurrentUser();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -17,6 +20,26 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
   //controla se está carregando login ou não
   bool _loading = false;
   Usuario user;
+
+  set loading(bool value){
+    _loading = value;
+    notifyListeners();
+  }
+
+  bool _loadingGoogle = false;
+  bool _loadingFace = false;
+
+  bool get loadingGoogle => _loadingGoogle;
+  set loadingGoogle(bool value){
+    _loadingGoogle = value;
+    notifyListeners();
+  }
+
+  bool get loadingFace => _loadingFace;
+  set loadingFace(bool value){
+    _loading = value;
+    notifyListeners();
+  }
 
   bool get isLoggedIn {
     return user != null;
@@ -26,8 +49,52 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
     return _loading;
   }
 
+
+  Future<void> googleLogin({Function onFail, Function onSuccess}) async {
+    _loadingGoogle = true;
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final UserCredential authResult = await _auth.signInWithCredential(credential);
+    final User user = authResult.user;
+
+    if (user != null) {
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
+
+      final User currentUser = _auth.currentUser;
+      assert(user.uid == currentUser.uid);
+
+     Usuario usuario = Usuario(
+          id: currentUser.uid,
+          nome: currentUser.displayName,
+          email: currentUser.email
+      );
+
+      await usuario.saveData();
+      print('signInWithGoogle succeeded: $user');
+      onSuccess();
+    //  notifyListeners();
+    }
+    else
+      onFail();
+
+    _loadingGoogle = false;
+
+  }
+
+
   Future<void> facebookLogin({Function onFail, Function onSuccess}) async {
-    loading = true;
+    loadingFace = true;
 
     final result = await FacebookLogin().logIn(['email', 'public_profile']); //quais informações do usuário vc tera acesso
 
@@ -56,24 +123,17 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
         onFail(result.errorMessage);
         break;
     }
-
-    loading = false;
+    loadingFace = false;
 
   }
 
-
-
-  set loading(bool value){
-    _loading = value;
-    notifyListeners();
-  }
 
   Future <void> signIn({Usuario user, Function onFail, Function onSuccess}) async{
     //esta logando
     _loading = true;
     try {
       final UserCredential result = await auth.signInWithEmailAndPassword(email: user.email, password: user.senha);
-      await _loadCurrentUser(firebaseUser: result.user);
+      await loadCurrentUser(firebaseUser: result.user);
 
       onSuccess();
     } on FirebaseAuthException catch(e){
@@ -108,7 +168,7 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
     notifyListeners();
   }
 
-  Future<void> _loadCurrentUser({User firebaseUser}) async {
+  Future<void> loadCurrentUser({User firebaseUser}) async {
     //se firebaseuser passado for nulo, pega o valor do firebase
     final User currentUser = firebaseUser ?? await auth.currentUser;
 
@@ -131,6 +191,8 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 
   void signOut(){
     auth.signOut();
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    _googleSignIn.signOut();
     user=null;
     notifyListeners();
   }

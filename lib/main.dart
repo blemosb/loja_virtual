@@ -22,6 +22,7 @@ import 'package:loja_virtual/screens/checkout/checkout_screen.dart';
 import 'package:loja_virtual/models/orders_manager.dart';
 import 'package:loja_virtual/models/order.dart';
 import 'package:loja_virtual/models/admin_orders_manager.dart';
+import 'package:loja_virtual/models/stores_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ProductManager(),
           lazy: false,
+        ),
+        ChangeNotifierProvider( //sem o lazy. dessa forma qdo o app for aberto não busca as lojas de forma automatica
+          create: (_) => StoresManager(),
         ),
         ChangeNotifierProvider(
           create: (_) => HomeManager(),

@@ -38,6 +38,16 @@ class LoginScreen extends StatelessWidget {
             key: formKey,
             child: Consumer<UserManager>(
               builder: (_, userManager, child) {
+                if(userManager.loadingGoogle){
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).primaryColor
+                      ),
+                    ),
+                  );
+                }
                 return ListView(
                   padding: const EdgeInsets.all(16),
                   shrinkWrap: true,
@@ -108,10 +118,10 @@ class LoginScreen extends StatelessWidget {
                             ),
                     ),
                     SignInButton(
-                      Buttons.Facebook,
-                      text: 'Entrar com Facebook',
+                      Buttons.Google,
+                      text: 'Entrar com Google',
                       onPressed: () {
-                        userManager.facebookLogin(
+                        userManager.googleLogin(
                             onFail: (e){
                               scaffoldKey.currentState.showSnackBar(
                                   SnackBar(
@@ -121,6 +131,7 @@ class LoginScreen extends StatelessWidget {
                               );
                             },
                             onSuccess: (){
+                              userManager.loadCurrentUser();
                               Navigator.of(context).pop();
                             }
                         );

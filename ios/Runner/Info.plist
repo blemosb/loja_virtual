@@ -48,5 +48,23 @@
     <key>NSMicrophoneUsageDescription</key>
     <string>Acessar microfone</string>
 
-</dict>
-</plist>
+    <string>fb355710559231130</string>
+        </array> </dict> </array>
+        <key>FacebookAppID</key>
+        <string>355710559231130</string>
+        <key>FacebookDisplayName</key>
+        <string>Loja do Bruno</string>
+
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>fbapi</string>
+            <string>fb-messenger-share-api</string>
+            <string>fbauth2</string>
+            <string>fbshareextension</string>
+            <string>comgooglemaps</string>
+            <string>iosamap</string>
+            <string>waze</string>
+        </array>
+
+    </dict>
+    </plist>

@@ -9,6 +9,7 @@ import 'package:loja_virtual/screens/admin_users/admin_users_screen.dart';
 import 'package:loja_virtual/screens/orders/orders_screen.dart';
 import 'package:loja_virtual/screens/admin_orders/admin_orders_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:loja_virtual/screens/stores/stores_screen.dart';
 
 class BaseScreen extends StatefulWidget { //controla página a ser exibida
 
@@ -43,12 +44,7 @@ class _BaseScreenState extends State<BaseScreen> {
                 HomeScreen(),
                 ProductsScreen(),
                OrdersScreen(),
-                Scaffold(
-                  drawer: CustomDrawer(),
-                  appBar: AppBar(
-                    title: const Text('Home4'),
-                  ),
-                ),
+                StoresScreen(),
                 if(userManager.adminEnabled)
                   ...[ //esses 3 pontos cria uma list dentro da principal. no caso só cria se o usuário for admin
                     AdminUsersScreen(),
