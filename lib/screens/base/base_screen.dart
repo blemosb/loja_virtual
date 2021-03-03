@@ -10,6 +10,9 @@ import 'package:loja_virtual/screens/orders/orders_screen.dart';
 import 'package:loja_virtual/screens/admin_orders/admin_orders_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual/screens/stores/stores_screen.dart';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flushbar/flushbar.dart';
 
 class BaseScreen extends StatefulWidget { //controla página a ser exibida
 
@@ -28,6 +31,50 @@ class _BaseScreenState extends State<BaseScreen> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp
     ]);
+
+    configFCM();
+  }
+
+  void configFCM(){
+    final fcm = FirebaseMessaging();
+
+    if(Platform.isIOS){
+      fcm.requestNotificationPermissions(
+          const IosNotificationSettings(provisional: true)
+      );
+    }
+
+    fcm.configure(
+      //aqui são as instruções que serão executadas depois que o usuário clicar na notificação e o app estiver fechado
+        onLaunch: (Map<String, dynamic> message) async {
+          print('onLaunch $message');
+        },
+        //executado qdo o aplicativo está em segundo plano e a notificação é clicada
+        onResume: (Map<String, dynamic> message) async {
+          print('onResume $message');
+        },
+        //executado qdo o aplicativo está aberto e a notificação é clicada
+        onMessage: (Map<String, dynamic> message) async {
+          showNotification(
+            message['notification']['title'] as String,
+            message['notification']['body'] as String,
+          );
+        }
+    );
+  }
+
+  void showNotification(String title, String message){
+    Flushbar(
+      title: title,
+      message: message,
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      isDismissible: true,
+      backgroundColor: Theme.of(context).primaryColor,
+      duration: const Duration(seconds: 5),
+      icon: Icon(Icons.shopping_cart, color: Colors.white,),
+    ).show(context);
+
   }
 
   @override

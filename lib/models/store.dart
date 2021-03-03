@@ -27,7 +27,7 @@ class Store {
       final timesString = value as String;
 
       if(timesString != null && timesString.isNotEmpty){
-        final splitted = timesString.split(RegExp(r"[:-]")); //divide a expressao em : - ex.: 8:00-12:00 divide em 8 00 12 00
+        final splitted = timesString.split(RegExp("[:-]")); //divide a expressao em : - ex.: 8:00-12:00 divide em 8 00 12 00
 
         return MapEntry(
             key,

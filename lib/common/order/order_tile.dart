@@ -67,7 +67,9 @@ class OrderTile extends StatelessWidget { //items da lista de pedidos
                 children: <Widget>[
                   FlatButton(
                     onPressed: (){
-                      showDialog(context: context,
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false, //não fecha o dialog clicando fora dele
                           builder: (_) => CancelOrderDialog(order) //alert dialog para confirmar o cancelamento
                       );
                     },

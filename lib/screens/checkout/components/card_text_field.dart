@@ -13,6 +13,8 @@ class CardTextField extends StatelessWidget {
     this.maxLength,
     this.textAlign = TextAlign.start,
     this.focusNode,
+    this.onSaved,
+    this.initialValue,
     this.onSubmitted,
   }) : textInputAction = onSubmitted == null //se for null aparece icone de pronto senão de proximo
       ? TextInputAction.done //parte de trás do cartão
@@ -29,12 +31,15 @@ class CardTextField extends StatelessWidget {
   final FocusNode focusNode;
   final Function(String) onSubmitted;
   final TextInputAction textInputAction; //campo para customizar o icone do teclado de proximo ou done
+  final FormFieldSetter<String> onSaved;
+  final String initialValue;
 
   @override
   Widget build(BuildContext context) {
     return FormField<String>(
       initialValue: '',
       validator: validator,
+      onSaved: onSaved,
       builder: (state) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
@@ -63,6 +68,7 @@ class CardTextField extends StatelessWidget {
                 ],
               ),
               TextFormField(
+                initialValue: initialValue,
                 style: TextStyle(
                   color: title == null && state.hasError
                       ? Colors.red : Colors.white,

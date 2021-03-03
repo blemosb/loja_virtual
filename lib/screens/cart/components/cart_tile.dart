@@ -63,8 +63,9 @@ class CartTile extends StatelessWidget { ///desenha as informacoes no card do ca
                                 ),
                               );
                             else
-                              return Text(
-                                'Sem estoque suficiente',
+                              return const Text(
+                                'Sem estoque. Pagamento estornado.',
+                                maxLines: 2,
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 12,

@@ -5,16 +5,20 @@ import 'package:loja_virtual/models/checkout_manager.dart';
 import 'package:loja_virtual/screens/orders/orders_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:loja_virtual/screens/checkout/components/credit_card_widget.dart';
+import 'package:loja_virtual/screens/checkout/components/cpf_field.dart';
+import 'package:loja_virtual/models/credit_card.dart';
 
 class CheckoutScreen extends StatelessWidget {
   //para criar uma snackbar
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  final CreditCard creditCard = CreditCard();
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProxyProvider<CartManager, CheckoutManager>(
-      //sempre q tiver um update no cartManager da outro no checkotmanager
+      //sempre q tiver um update no cartManager da outro no checkoutmanager
       create: (_) => CheckoutManager(), //no início cria um checkoutmanager
       //sempre q tiver update no cartManager ele passa o cartManager para o método updateCart no checkoutManager
       update: (_, cartManager, checkoutManager) =>
@@ -56,16 +60,26 @@ class CheckoutScreen extends StatelessWidget {
                 key: formKey,
                 child: ListView(
                   children: <Widget>[
-                    CreditCardWidget(),
+                    CreditCardWidget(creditCard),
+                    CpfField(),
                     PriceCard(
                       buttonText: 'Finalizar Pedido',
                       onPressed: () {
                         if (formKey.currentState.validate()) {
-                          print('enviar');
-                          /*checkoutManager.checkout(
+                          formKey.currentState.save();
+                          checkoutManager.checkout(
+                              creditCard: creditCard,
                               onStockFail: (e){
                                 Navigator.of(context).popUntil(
                                         (route) => route.settings.name == '/cart');
+                              },
+                              onPayFail: (e){
+                                scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content: Text('$e'),
+                                      backgroundColor: Colors.red,
+                                    )
+                                );
                               },
                               onSuccess: (order){
                                 Navigator.of(context).popUntil(
@@ -75,7 +89,7 @@ class CheckoutScreen extends StatelessWidget {
                                     arguments: order
                                 );
                               }
-                          );*/
+                          );
                         }
                       },
                     )

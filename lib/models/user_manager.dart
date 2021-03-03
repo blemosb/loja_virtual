@@ -81,7 +81,9 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
       );
 
       await usuario.saveData();
-      print('signInWithGoogle succeeded: $user');
+
+      usuario.saveToken();
+
       onSuccess();
     //  notifyListeners();
     }
@@ -113,6 +115,8 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
           );
 
           await user.saveData();
+
+          user.saveToken();
 
           onSuccess();
         }
@@ -154,6 +158,8 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
       this.user = user;
       await user.saveData();
 
+      user.saveToken();
+
       onSuccess();
     } on FirebaseAuthException catch (e){
       print(e);
@@ -176,6 +182,8 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
       final DocumentSnapshot docUser = await firestore.collection("users").doc(currentUser.uid).get();
       //passa para a classe usuario
       user = Usuario.fromDocument(docUser);
+
+      user.saveToken();
 
       //verifica se este usuário é admin
       final docAdmin = await firestore.collection('admins').doc(user.id).get();

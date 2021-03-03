@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/screens/checkout/components/card_back.dart';
 import 'package:loja_virtual/screens/checkout/components/card_front.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:loja_virtual/models/credit_card.dart';
 
 class CreditCardWidget extends StatefulWidget { //FULL PARA OS FOCUS ABAIXO NÃO SEREM PERDIDOS E criados novamente
+
+  const CreditCardWidget(this.creditCard);
+
+  final CreditCard creditCard;
 
   @override
   _CreditCardWidgetState createState() => _CreditCardWidgetState();
@@ -62,6 +67,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
               speed: 700,
               flipOnTouch: false, //desabilita clicar no cartão e virar
               front: CardFront(
+                creditCard: widget.creditCard,
                 numberFocus: numberFocus,
                 dateFocus: dateFocus,
                 nameFocus: nameFocus,
@@ -71,6 +77,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
                 },
               ),
               back: CardBack(
+                creditCard: widget.creditCard,
                 cvvFocus: cvvFocus,
               ),
             ),

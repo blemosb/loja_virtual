@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loja_virtual/models/address.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/models/cart_product.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:loja_virtual/services/cielo_payment.dart';
 
 enum Status { canceled, preparing, transporting, delivered }
 
@@ -25,7 +27,7 @@ class Order { //model para armazenar informações sobre um pedido
   String userId;
   Status status;
   Address address;
-
+  String payId;
   Timestamp date;
 
 
@@ -47,9 +49,16 @@ class Order { //model para armazenar informações sobre um pedido
     } : null;
   }
 
-  void cancel(){
-    status = Status.canceled;
-    firestoreRef.update({'status': status.index});
+  Future<void> cancel() async {
+    try {
+      await CieloPayment().cancel(payId); //primeiro cancela update do pgto
+//depois altera o status
+      status = Status.canceled;
+      firestoreRef.update({'status': status.index});
+    } catch (e){
+      debugPrint('Erro ao cancelar');
+      return Future.error('Falha ao cancelar');
+    }
   }
 
   Future<void> save() async {
@@ -61,6 +70,7 @@ class Order { //model para armazenar informações sobre um pedido
           'address': address.toMap(),
           'status': status.index,
           'date': Timestamp.now(),
+          'payId': payId,
         }
     );
   }
@@ -79,6 +89,7 @@ class Order { //model para armazenar informações sobre um pedido
     address = Address.fromMap(doc.data()['address'] as Map<String, dynamic>);
     date = doc.data()['date'] as Timestamp;
     status = Status.values[doc.data()['status'] as int];
+    payId = doc.data()['payId'] as String;
   }
 
   DocumentReference get firestoreRef =>

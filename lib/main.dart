@@ -28,11 +28,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
+ // final response = await FirebaseFunctions.instance.httpsCallable('helloWorld').call();
+  //final response = await FirebaseFunctions.instance.httpsCallable('getUserData').call();
+ // final response = await CloudFunctions.instance.getHttpsCallable(functionName: 'addMessage').call(
+   //   {"teste" : "Daniel"}
+  //);
+  //print(response.data);
 }
 
 class MyApp extends StatelessWidget {
-
-  final instancia = FirebaseFirestore.instance;
 
   // This widget is the root of your application.
   @override

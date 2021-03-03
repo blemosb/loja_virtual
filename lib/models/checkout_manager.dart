@@ -3,11 +3,14 @@ import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loja_virtual/models/product.dart';
 import 'package:loja_virtual/models/order.dart';
+import 'package:loja_virtual/models/credit_card.dart';
+import 'package:loja_virtual/services/cielo_payment.dart';
 
 class CheckoutManager extends ChangeNotifier {
 
 CartManager cartManager;
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
+final CieloPayment cieloPayment = CieloPayment();
 
    void updateCart(CartManager cartManager){
       this.cartManager = cartManager;
@@ -23,25 +26,59 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 //1.primeiro verifica se tem estoque disponível 2.depois processa o pgto 3.Gera um número de pedido 4. Cria um objeto pedido
   //5. Salva o pedido no firebase
-  Future<void> checkout({Function onStockFail, Function onSuccess}) async {
+  Future<void> checkout({CreditCard creditCard,
+    Function onStockFail,
+    Function onSuccess,
+    Function onPayFail}) async {
+
     loading = true;
+    final orderId = await _getOrderId();
+    String payId;
+
+    //AUTORIZAÇÃO DO PGTO
+    try {
+        payId = await cieloPayment.authorize(
+        creditCard: creditCard,
+       // price: cartManager.totalPrice,
+        price: 1,
+        orderId: orderId.toString(),
+        user: cartManager.user,
+      );
+      debugPrint('success autorização $payId');
+    } catch (e){
+      onPayFail(e);
+      loading = false;
+      return;
+    }
+
+    //DECREMENTA O ESTOQUE
     try {
       await _decrementStock();
     } catch (e){
+      //se der problema entre a autorização e o pgto, cancela a autorização, senão bloqueia o limite do cliente até cancelar depois de alguns dias
+      cieloPayment.cancel(payId);
       onStockFail(e); //volta para tela do carrinho e mostra qual o produto não está disponivel
       loading = false;
       return;
     }
 
-    // TODO: PROCESSAR PAGAMENTO
-
-    final orderId = await _getOrderId();
+// CAPTURAR O PAGAMENTO
+    try {
+      await cieloPayment.capture(payId);
+      debugPrint("success captura");
+    } catch (e){
+      onPayFail(e);
+      loading = false;
+      return;
+    }
 
     final order = Order.fromCartManager(cartManager);
     order.orderId = orderId.toString();
+    order.payId = payId;
 
     await order.save();
     cartManager.clear();
+
 
     onSuccess(order);
     loading = false;
