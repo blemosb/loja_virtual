@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual/helpers/firebase_errors.dart';
 import 'package:loja_virtual/models/usuario.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+//import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -95,7 +95,7 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
   }
 
 
-  Future<void> facebookLogin({Function onFail, Function onSuccess}) async {
+  /*Future<void> facebookLogin({Function onFail, Function onSuccess}) async {
     loadingFace = true;
 
     final result = await FacebookLogin().logIn(['email', 'public_profile']); //quais informações do usuário vc tera acesso
@@ -131,7 +131,7 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 
   }
 
-
+*/
   Future <void> signIn({Usuario user, Function onFail, Function onSuccess}) async{
     //esta logando
     _loading = true;
