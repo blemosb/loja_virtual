@@ -45,7 +45,7 @@ dependencies:
   screenshot: ^0.2.0
   gallery_saver: ^2.0.3
   flutter_signin_button: ^1.1.0
-  flutter_facebook_login: ^3.0.0
+  #flutter_facebook_login: ^3.0.0
   url_launcher: ^5.7.10
   google_sign_in: ^4.5.9
   map_launcher: ^0.5.0
@@ -57,6 +57,7 @@ dependencies:
   cpf_cnpj_validator: ^1.0.5
   flushbar: ^1.10.4
   firebase_messaging: ^7.0.3
+  apple_sign_in: ^0.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
