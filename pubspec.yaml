@@ -57,6 +57,7 @@ dependencies:
   cpf_cnpj_validator: ^1.0.5
   flushbar: ^1.10.4
   firebase_messaging: ^7.0.3
+  apple_sign_in: ^0.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

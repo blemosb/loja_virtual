@@ -1,3 +1,4 @@
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
   }
 
   bool _loadingGoogle = false;
+  bool _loadingApple = false;
   bool _loadingFace = false;
 
   bool get loadingGoogle => _loadingGoogle;
@@ -34,6 +36,15 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
     _loadingGoogle = value;
     notifyListeners();
   }
+
+  bool get loadingApple => _loadingApple;
+  set loadingApple(bool value){
+    _loadingApple = value;
+    notifyListeners();
+  }
+
+  // Determine if Apple SignIn is available
+  Future<bool> get appleSignInAvailable => AppleSignIn.isAvailable();
 
   bool get loadingFace => _loadingFace;
   set loadingFace(bool value){
@@ -91,6 +102,80 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
       onFail();
 
     _loadingGoogle = false;
+
+  }
+//LOGIN APLLE
+  Future<void> appleLogin({Function onFail, Function onSuccess}) async {
+    _loadingApple = true;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    try {
+
+      final AuthorizationResult result = await AppleSignIn.performRequests([
+        AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+      ]);
+
+      switch (result.status) {
+        case AuthorizationStatus.authorized:
+          try {
+            print("successfull sign in");
+            final AppleIdCredential appleIdCredential = result.credential;
+
+            OAuthProvider oAuthProvider =
+            new OAuthProvider("apple.com");
+            final AuthCredential credential = oAuthProvider.credential(
+              idToken:
+              String.fromCharCodes(appleIdCredential.identityToken),
+              accessToken:
+              String.fromCharCodes(appleIdCredential.authorizationCode),
+            );
+
+            final UserCredential authResult = await FirebaseAuth.instance
+                .signInWithCredential(credential);
+
+            final User user = authResult.user;
+
+            if (user != null) {
+              assert(!user.isAnonymous);
+              assert(await user.getIdToken() != null);
+
+              final User currentUser = _auth.currentUser;
+              assert(user.uid == currentUser.uid);
+
+              Usuario usuario = Usuario(
+                  id: currentUser.uid,
+                  nome: result.credential.fullName.givenName + " " + result.credential.fullName.familyName,
+                  email: currentUser.email
+              );
+
+              await usuario.saveData();
+
+              usuario.saveToken();
+
+              onSuccess();
+              //  notifyListeners();
+            }
+            else
+              onFail();
+
+          } catch (e) {
+            print("error");
+          }
+          break;
+        case AuthorizationStatus.error:
+          onFail();
+          break;
+
+        case AuthorizationStatus.cancelled:
+          print('User cancelled');
+          break;
+      }
+    } catch (error) {
+      print("error with apple sign in");
+      onFail();
+    }
+
+    _loadingApple = false;
 
   }
 

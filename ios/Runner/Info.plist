@@ -41,30 +41,39 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Acessar galeria para escolher imagem</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Acessar camera para adicionar imagem</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Acessar microfone</string>
+        <string>Acessar galeria para escolher imagem</string>
+        <key>NSCameraUsageDescription</key>
+        <string>Acessar camera para adicionar imagem</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>Acessar microfone</string>
 
-    <string>fb355710559231130</string>
-        </array> </dict> </array>
-        <key>FacebookAppID</key>
-        <string>355710559231130</string>
-        <key>FacebookDisplayName</key>
-        <string>Loja do Bruno</string>
+            <key>LSApplicationQueriesSchemes</key>
+            <array>
+                <string>fbapi</string>
+                <string>fb-messenger-share-api</string>
+                <string>fbauth2</string>
+                <string>fbshareextension</string>
+                <string>comgooglemaps</string>
+                <string>iosamap</string>
+                <string>waze</string>
+            </array>
 
-        <key>LSApplicationQueriesSchemes</key>
-        <array>
-            <string>fbapi</string>
-            <string>fb-messenger-share-api</string>
-            <string>fbauth2</string>
-            <string>fbshareextension</string>
-            <string>comgooglemaps</string>
-            <string>iosamap</string>
-            <string>waze</string>
-        </array>
+            <!-- Google Sign-in Section -->
+            <key>CFBundleURLTypes</key>
+            <array>
+            	<dict>
+            		<key>CFBundleTypeRole</key>
+            		<string>Editor</string>
+            		<key>CFBundleURLSchemes</key>
+            		<array>
+            			<string>com.googleusercontent.apps.390373865593-v0b0hvgnmhgagrkid5dogq7cluia1mja</string>
+            		</array>
+            	</dict>
+            </array>
+            <!-- End of the Google Sign-in Section -->
 
-    </dict>
-    </plist>
+
+</dict>
+</plist>
