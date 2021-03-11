@@ -2,9 +2,7 @@
 <resources>
 
     <string name="app_name">Loja do Bruno</string>
-
     <string name="facebook_app_id">355710559231130</string>
-
     <string name="fb_login_protocol_scheme">fb355710559231130</string>
 
 </resources>

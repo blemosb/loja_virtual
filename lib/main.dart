@@ -5,6 +5,7 @@ import 'package:loja_virtual/models/product.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'package:loja_virtual/screens/base/base_screen.dart';
 import 'package:loja_virtual/screens/edit_product/edit_product_screen.dart';
+import 'package:loja_virtual/screens/home/home_screen.dart';
 import 'package:loja_virtual/screens/login/login_screen.dart';
 import 'package:loja_virtual/screens/product/product_screen.dart';
 import 'package:loja_virtual/screens/signup/signup_screen.dart';
@@ -28,22 +29,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
- // final response = await FirebaseFunctions.instance.httpsCallable('helloWorld').call();
+  // final response = await FirebaseFunctions.instance.httpsCallable('helloWorld').call();
   //final response = await FirebaseFunctions.instance.httpsCallable('getUserData').call();
- // final response = await CloudFunctions.instance.getHttpsCallable(functionName: 'addMessage').call(
-   //   {"teste" : "Daniel"}
+  // final response = await CloudFunctions.instance.getHttpsCallable(functionName: 'addMessage').call(
+  //   {"teste" : "Daniel"}
   //);
   //print(response.data);
 }
 
 class MyApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
-      providers: [ //já cria todos no momento de abertura do app
+      providers: [
+        //já cria todos no momento de abertura do app
         ChangeNotifierProvider(
           create: (_) => UserManager(),
           lazy: false,
@@ -52,105 +52,86 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductManager(),
           lazy: false,
         ),
-        ChangeNotifierProvider( //sem o lazy. dessa forma qdo o app for aberto não busca as lojas de forma automatica
+        ChangeNotifierProvider(
+          //sem o lazy. dessa forma qdo o app for aberto não busca as lojas de forma automatica
           create: (_) => StoresManager(),
         ),
         ChangeNotifierProvider(
           create: (_) => HomeManager(),
           lazy: false,
         ),
-        ChangeNotifierProxyProvider<UserManager, OrdersManager>( //sempre que um usuário for alterado busca os pedidos deste no firebase
+        ChangeNotifierProxyProvider<UserManager, OrdersManager>(
+          //sempre que um usuário for alterado busca os pedidos deste no firebase
           create: (_) => OrdersManager(),
           lazy: false,
           update: (_, userManager, ordersManager) =>
-          ordersManager..updateUser(userManager.user),
+              ordersManager..updateUser(userManager.user),
         ),
-        ChangeNotifierProxyProvider<UserManager, CartManager>(//sempre que o usuario manager for atualizado, avisa o cartmanager. Por isso proxy
+        ChangeNotifierProxyProvider<UserManager, CartManager>(
+          //sempre que o usuario manager for atualizado, avisa o cartmanager. Por isso proxy
           create: (_) => CartManager(),
           lazy: false,
           update: (_, userManager, cartManager) =>
-          cartManager..updateUser(userManager),
+              cartManager..updateUser(userManager),
         ),
-        ChangeNotifierProxyProvider<UserManager, AdminUsersManager>( //adminusermanager depende de ussermanager
+        ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
+          //adminusermanager depende de ussermanager
           create: (_) => AdminUsersManager(),
-          lazy: false, //já carrega qdo usuário admin estiver logado. senao teria q esperar baixar qdo entrasse na tela de usuarios
-          update: (_, userManager, adminUsersManager) => //baixar lista de admins agora
-          adminUsersManager..updateUser(userManager),
-    ),
-        ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
-        create: (_) => AdminOrdersManager(),
-        lazy: false,
-        update: (_, userManager, adminOrdersManager) =>
-        adminOrdersManager..updateAdmin(
-        adminEnabled: userManager.adminEnabled
+          lazy:
+              false, //já carrega qdo usuário admin estiver logado. senao teria q esperar baixar qdo entrasse na tela de usuarios
+          update: (_, userManager,
+                  adminUsersManager) => //baixar lista de admins agora
+              adminUsersManager..updateUser(userManager),
         ),
+        ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
+          create: (_) => AdminOrdersManager(),
+          lazy: false,
+          update: (_, userManager, adminOrdersManager) => adminOrdersManager
+            ..updateAdmin(adminEnabled: userManager.adminEnabled),
         )
       ],
       child: MaterialApp(
         title: 'Loja do Bruno',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-
-          primaryColor: const Color.fromARGB(255, 4, 125, 141), //define a cor primária para o app
+          primaryColor: const Color.fromARGB(
+              255, 4, 125, 141), //define a cor primária para o app
           scaffoldBackgroundColor: const Color.fromARGB(255, 4, 125, 141),
-          appBarTheme: const AppBarTheme(
-            elevation: 0
-          ),
+          appBarTheme: const AppBarTheme(elevation: 0),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        onGenerateRoute: (settings){
-          switch(settings.name){
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
             case '/signup':
-              return MaterialPageRoute(
-                  builder: (_) => SignUpScreen()
-              );
+              return MaterialPageRoute(builder: (_) => SignUpScreen());
             case '/products':
-              return MaterialPageRoute(
-                  builder: (_) => ProductsScreen()
-              );
+              return MaterialPageRoute(builder: (_) => ProductsScreen());
             case '/checkout':
-              return MaterialPageRoute(
-                  builder: (_) => CheckoutScreen()
-              );
+              return MaterialPageRoute(builder: (_) => CheckoutScreen());
             case '/login':
-              return MaterialPageRoute(
-                  builder: (_) => LoginScreen()
-              );
+              return MaterialPageRoute(builder: (_) => LoginScreen());
             case '/edit_product':
               return MaterialPageRoute(
-                  builder: (_) => EditProductScreen(settings.arguments as Product)
-              );
+                  builder: (_) =>
+                      EditProductScreen(settings.arguments as Product));
             case '/product':
               return MaterialPageRoute(
-                  builder: (_) => ProductScreen(
-                    settings.arguments as Product
-                  )
-              );
+                  builder: (_) => ProductScreen(settings.arguments as Product));
             case '/confirmation':
               return MaterialPageRoute(
-                  builder: (_) => ConfirmationScreen(
-                      settings.arguments as Order
-                  )
-              );
+                  builder: (_) =>
+                      ConfirmationScreen(settings.arguments as Order));
             case '/cart':
               return MaterialPageRoute(
-                  builder: (_) => CartScreen(),
-                  settings: settings
-              );
+                  builder: (_) => CartScreen(), settings: settings);
             case '/address':
-              return MaterialPageRoute(
-                  builder: (_) => AddressScreen()
-              );
+              return MaterialPageRoute(builder: (_) => AddressScreen());
             case '/select_product':
-              return MaterialPageRoute(
-                  builder: (_) => SelectProductScreen()
-              );
+              return MaterialPageRoute(builder: (_) => SelectProductScreen());
             case '/':
             default:
               return MaterialPageRoute(
-                  builder: (_) => BaseScreen(),
-                  settings: settings
-              );
+                  builder: (_) => BaseScreen(), settings: settings);
           }
         },
       ),
