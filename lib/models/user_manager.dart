@@ -292,4 +292,10 @@ class UserManager extends ChangeNotifier{ //gerencia operaçoes sobre o usuário
 //fc para simplificar verificacao se usuario e admin ou nao
   bool get adminEnabled => user != null && user.admin;
 
+  //executado se o usuário esqueceu a senha do cadastro
+  void recoverPass(String email) {
+    auth.sendPasswordResetEmail(email: email);
+    notifyListeners();
+  }
+
 }
