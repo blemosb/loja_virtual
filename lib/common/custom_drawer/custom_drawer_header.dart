@@ -9,19 +9,23 @@ class CustomDrawerHeader extends StatelessWidget { //cabeçalho do menu lateral
     return Container(
       padding: const EdgeInsets.fromLTRB(32, 24, 16, 8),
       height: 180,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [const Color.fromARGB(255, 65, 16, 165),
+                Colors.white,],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter
+          )
+      ),
       child: Consumer<UserManager>(
         builder: (_, userManager, __){
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text(
-                'Loja do\nBruno',
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+             Expanded(child:  //como é uma coluna expanded faz ocupar todo o espaço disponível verticalmente
+             Image(image: AssetImage('images/LB.png')),
+             ),
               Text(
                 'Olá, ${userManager.user?.nome ?? ''}',
                 overflow: TextOverflow.ellipsis,
