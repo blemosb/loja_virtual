@@ -5,8 +5,6 @@ import 'package:loja_virtual/models/usuario.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:apple_sign_in/apple_sign_in.dart';
-import 'dart:io';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -127,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                       height: 40.0,
                       child: SignInButton( //LOGIN GOOGLE
                         Buttons.GoogleDark,
-                        text: 'Entrar com Google',
+                        text: 'Entrar com Google (Gmail)',
                         onPressed: () {
                           userManager.googleLogin(
                               onFail: (e){
@@ -149,6 +147,7 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
+                    //apple button
                     Container(
                       height: 40.0,
                       child: FutureBuilder(
@@ -175,26 +174,13 @@ class LoginScreen extends StatelessWidget {
                                 );
                               },
                             );
-                          } else {
-                            return SignInButton( //LOGIN FACEBOOK
+                          }
+                          //se não for iphone
+                          else {
+                            return SignInButton( //LOGIN APPLE
                               Buttons.AppleDark,
-                              text: 'Entrar com Apple',
-                              onPressed: () {
-                                userManager.googleLogin(
-                                    onFail: (e){
-                                      scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                            content: Text('Falha ao entrar: $e'),
-                                            backgroundColor: Colors.red,
-                                          )
-                                      );
-                                    },
-                                    onSuccess: (){
-                                      userManager.loadCurrentUser();
-                                      Navigator.of(context).pop();
-                                    }
-                                );
-                              },
+                              text: 'Entrar com Apple (Iphone)',
+                              onPressed: () => null,
                             );
                           }
                         },

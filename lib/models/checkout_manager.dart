@@ -39,7 +39,7 @@ final CieloPayment cieloPayment = CieloPayment();
     try {
         payId = await cieloPayment.authorize(
         creditCard: creditCard,
-       // price: cartManager.totalPrice,
+       // price: cartManager.totalPrice,  TODO alterar preço para o real
         price: 1,
         orderId: orderId.toString(),
         user: cartManager.user,

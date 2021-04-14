@@ -69,6 +69,7 @@ class EditProductScreen extends StatelessWidget { //tela para editar produto
                       },
                       onSaved: (name) => product.name = name,
                     ),
+                    /*
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
@@ -97,7 +98,7 @@ class EditProductScreen extends StatelessWidget { //tela para editar produto
                           color: primaryColor,
                         ),
                       ),
-                    ),
+                    ),*/
                     TextFormField(
                       initialValue: product.description,
                       style: const TextStyle(

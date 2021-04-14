@@ -8,14 +8,17 @@ admin.initializeApp(functions.config().firebase);
 // https://firebase.google.com/docs/functions/typescript
 const merchantId = functions.config().cielo.merchantid;
 const merchantKey = functions.config().cielo.merchantkey;
+
 const cieloParams: CieloConstructor = { 
     merchantId: merchantId,
     merchantKey: merchantKey,
     sandbox: false, //produção
-    debug: false,
+    debug: true,
 }
 const cielo = new Cielo(cieloParams);
 export const authorizeCreditCard = functions.https.onCall(async (data, context) => {
+    console.log(merchantId);
+    console.log(merchantKey);
     if(data === null){
         return {
             "success": false,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loja_virtual/common/custom_drawer/custom_drawer.dart';
 import 'package:loja_virtual/models/page_manager.dart';
 import 'package:loja_virtual/screens/contact/contact_screen.dart';
 import 'package:loja_virtual/screens/products/products_screen.dart';
@@ -75,7 +74,6 @@ class _BaseScreenState extends State<BaseScreen> {
       duration: const Duration(seconds: 5),
       icon: Icon(Icons.shopping_cart, color: Colors.white,),
     ).show(context);
-
   }
 
   @override

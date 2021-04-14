@@ -13,20 +13,25 @@ class ContactScreen extends StatelessWidget {
       final Email email = Email(
         body: "Descreva aqui suas dúvidas ou solicitações. Favor não alterar o texto do TÍTULO pois tenho um filtro para recebê-los do jeito que ele está.",
         subject: "APP para seu Negócio",
-        recipients: ['blemosb@gmail.com'],
+        recipients: ['bdeveloperb@gmail.com'],
        // cc: ['cc@example.com'],
         //bcc: ['bcc@example.com'],
        // attachmentPaths: attachments,
         isHTML: false,
       );
-
-      String platformResponse;
-
       try {
         await FlutterEmailSender.send(email);
-        platformResponse = 'success';
       } catch (error) {
-        platformResponse = error.toString();
+        Flushbar(
+          title: "Erro",
+          message: "Este dispositivo não tem um cliente de email instalado",
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          flushbarStyle: FlushbarStyle.GROUNDED,
+          isDismissible: true,
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+          icon: Icon(Icons.error_outline_rounded, color: Colors.white,),
+        ).show(context);
       }
 
     }
