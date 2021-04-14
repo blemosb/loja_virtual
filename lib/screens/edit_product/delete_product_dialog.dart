@@ -22,7 +22,7 @@ class DeleteProductDialog extends StatelessWidget {
             Navigator.of(context).pushNamed('/products');
           },
           textColor: Colors.red,
-          child: const Text('Cancelar Pedido'),
+          child: const Text('Excluir Produto'),
         ),
       ],
     );

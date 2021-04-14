@@ -5,8 +5,6 @@ import 'package:loja_virtual/models/usuario.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:apple_sign_in/apple_sign_in.dart';
-import 'dart:io';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -127,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                       height: 40.0,
                       child: SignInButton( //LOGIN GOOGLE
                         Buttons.GoogleDark,
-                        text: 'Entrar com Google',
+                        text: 'Entrar com Google (Gmail)',
                         onPressed: () {
                           userManager.googleLogin(
                               onFail: (e){
@@ -149,6 +147,7 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
+                    //apple button
                     Container(
                       height: 40.0,
                       child: FutureBuilder(
@@ -175,26 +174,13 @@ class LoginScreen extends StatelessWidget {
                                 );
                               },
                             );
-                          } else {
-                            return SignInButton( //LOGIN FACEBOOK
+                          }
+                          //se não for iphone
+                          else {
+                            return SignInButton( //LOGIN APPLE
                               Buttons.AppleDark,
-                              text: 'Entrar com Apple',
-                              onPressed: () {
-                                userManager.googleLogin(
-                                    onFail: (e){
-                                      scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                            content: Text('Falha ao entrar: $e'),
-                                            backgroundColor: Colors.red,
-                                          )
-                                      );
-                                    },
-                                    onSuccess: (){
-                                      userManager.loadCurrentUser();
-                                      Navigator.of(context).pop();
-                                    }
-                                );
-                              },
+                              text: 'Entrar com Apple (Iphone)',
+                              onPressed: () => null,
                             );
                           }
                         },
@@ -204,12 +190,66 @@ class LoginScreen extends StatelessWidget {
                   ],
                 );
               },
-              child: Align(
+              child:     Align(
                 alignment: Alignment.centerRight,
-                child: FlatButton(
-                  onPressed: () {},
-                  padding: EdgeInsets.zero,
-                  child: const Text('Esqueci minha senha'),
+                child: Consumer<UserManager>(
+                  builder: (_, userManager, __) {
+                    return FlatButton(
+                      onPressed: () { //se digitar um email vazio ou com formato inválido
+                        if ((emailController.text.isEmpty) || (!emailValid(emailController.text))) {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: const Text(
+                                'Digite um e-mail válido',
+                                textAlign: TextAlign.center,
+                            ),
+                            backgroundColor: Colors.redAccent,
+                            duration: Duration(seconds: 4),
+                          ));
+                        } else
+                          //se digitou um email com formato válido
+                            if (!emailController.text.isEmpty){
+                              //tenta logar com o email e uma senha fake. Assim ele válida primeiro o email se existe ou não.
+                              //dando erro nem tenta ver a senha. se deixar a senha em branco ele retorna erro de senha nula
+                              userManager.signIn(
+                              user: Usuario(
+                              email: emailController.text,
+                              senha: "123"),
+                              //irá sempre gerar exceção. Seja por um usuário q n exista ou caso ele exista está criticando a senha fake
+                              onFail: (e) {
+                                //se a conta não existir avisa o usuário
+                                if (e =="Não há usuário com este e-mail."){
+                                  scaffoldKey.currentState
+                                      .showSnackBar(SnackBar(
+                                    content: Text('Erro: $e', textAlign: TextAlign.center,),
+                                    backgroundColor: Colors.red,
+                                  ));
+                                }
+                                //se retornar outra msg na exceção é pq a conta existe, aí faz o recovery
+                                else{
+                                  userManager.recoverPass(emailController.text);
+                                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: const Text(
+                                      'Link para uma nova senha enviado para seu e-mail.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 4),
+                                  ));
+                                }
+
+                              },
+                                  //se não gerou exceção é pq o usuário existe, então pode enviar email para alteração
+                              onSuccess: () {
+
+                              });
+                            }
+                      },
+                      padding: EdgeInsets.zero,
+                      child: const Text(
+                        'Esqueci minha senha',
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
