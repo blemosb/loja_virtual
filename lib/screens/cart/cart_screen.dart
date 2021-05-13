@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/common/custom_drawer/custom_drawer.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/screens/cart/components/cart_tile.dart';
 import 'package:loja_virtual/screens/products/products_screen.dart';
@@ -8,9 +9,19 @@ import 'package:loja_virtual/common/empty_card.dart';
 import 'package:loja_virtual/common/login_card.dart';
 
 class CartScreen extends StatelessWidget { //tela para exibir o carrinho
+
+  const CartScreen({
+    Key key,
+    @required this.pageController,
+  }) : super(key: key);
+
+  final PageController pageController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //só aparece o drawer se estiver vindo do drawer
+      drawer: pageController!=null ? CustomDrawer() : null,
       appBar: AppBar(
         title: const Text('Carrinho'),
         centerTitle: true,

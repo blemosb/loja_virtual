@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/page_manager.dart';
+import 'package:loja_virtual/screens/cart/cart_screen.dart';
 import 'package:loja_virtual/screens/contact/contact_screen.dart';
 import 'package:loja_virtual/screens/products/products_screen.dart';
 import 'package:provider/provider.dart';
@@ -90,6 +91,7 @@ class _BaseScreenState extends State<BaseScreen> {
                 HomeScreen(),
                 ProductsScreen(),
                OrdersScreen(),
+                CartScreen(pageController: pageController),
                 StoresScreen(),
                 if(userManager.adminEnabled)
                   ...[ //esses 3 pontos cria uma list dentro da principal. no caso só cria se o usuário for admin

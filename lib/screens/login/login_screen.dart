@@ -125,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                       height: 40.0,
                       child: SignInButton( //LOGIN GOOGLE
                         Buttons.GoogleDark,
-                        text: 'Entrar com Google (Gmail)',
+                        text: 'Entrar com Google',
                         onPressed: () {
                           userManager.googleLogin(
                               onFail: (e){
@@ -149,7 +149,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     //apple button
                     Container(
-                      height: 40.0,
+                      //height: 40.0,
                       child: FutureBuilder(
                         future: userManager.appleSignInAvailable,
                         builder: (context, snapshot) {
@@ -175,13 +175,15 @@ class LoginScreen extends StatelessWidget {
                               },
                             );
                           }
+
                           //se não for iphone
                           else {
-                            return SignInButton( //LOGIN APPLE
+                            return SizedBox(height: 0.1,);
+                           /* return SignInButton( //LOGIN APPLE
                               Buttons.AppleDark,
                               text: 'Entrar com Apple (Iphone)',
                               onPressed: () => null,
-                            );
+                            );*/
                           }
                         },
                       ),

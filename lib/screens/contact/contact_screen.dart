@@ -13,7 +13,7 @@ class ContactScreen extends StatelessWidget {
       final Email email = Email(
         body: "Descreva aqui suas dúvidas ou solicitações. Favor não alterar o texto do TÍTULO pois tenho um filtro para recebê-los do jeito que ele está.",
         subject: "APP para seu Negócio",
-        recipients: ['bdeveloperb@gmail.com'],
+        recipients: ['bdeveloperbarroso@gmail.com'],
        // cc: ['cc@example.com'],
         //bcc: ['bcc@example.com'],
        // attachmentPaths: attachments,

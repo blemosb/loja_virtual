@@ -26,15 +26,16 @@
                   DrawerTitle(iconData: Icons.home, title: "Início", page: 0), //faz o link para a página criada em base screen
                   DrawerTitle(iconData: Icons.list, title: "Produtos", page: 1),
                   DrawerTitle(iconData: Icons.playlist_add_check, title: "Meus Pedidos", page: 2),
-                  DrawerTitle(iconData: Icons.location_on, title: "Lojas", page: 3),
+                  DrawerTitle(iconData: Icons.shopping_cart, title: "Meu Carrinho", page: 3),
+                  DrawerTitle(iconData: Icons.location_on, title: "Lojas", page: 4),
                   Consumer<UserManager>( //somente para usuarios admin
                       builder: (_,userManager,__){
                         if(userManager.adminEnabled){
                           return Column(
                             children: [
                               const Divider(),
-                              DrawerTitle(iconData: Icons.settings, title: "Usuarios", page: 4),
-                              DrawerTitle(iconData: Icons.settings, title: "Pedidos", page: 5),
+                              DrawerTitle(iconData: Icons.settings, title: "Usuarios", page: 5),
+                              DrawerTitle(iconData: Icons.settings, title: "Pedidos", page: 6),
                             ],
                           );
                         }
@@ -44,7 +45,7 @@
                       }
                   ),
                   const Divider(), //divide o cabecalho para os créditos
-                  DrawerTitle(iconData: Icons.contact_mail_outlined, title: "Contato", page: 6),
+                  DrawerTitle(iconData: Icons.contact_mail_outlined, title: "Contato", page: 7),
                 ]
             ),
           ],
